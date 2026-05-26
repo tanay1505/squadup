@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import { auth } from "./firebase";
-import { signInWithPhoneNumber } from "firebase/auth";
+import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth"; // Import RecaptchaVerifier
 
 const darkInput = {
   width:"100%", padding:"11px 14px", borderRadius:12,
@@ -35,7 +35,7 @@ export default function AuthPage({ onAuth }) {
     return () => clearTimeout(t);
   }, [countdown]);
 
-  // ── Send OTP — no reCAPTCHA needed when testing disabled ──
+  // ── Send OTP ──
   const sendOtp = async () => {
     setError("");
     if (!phone.match(/^[6-9]\d{9}$/))
@@ -43,12 +43,24 @@ export default function AuthPage({ onAuth }) {
 
     setLoading(true);
     try {
-      // With appVerificationDisabledForTesting = true,
-      // we pass null instead of a recaptcha verifier
+      // Initialize the RecaptchaVerifier
+      const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible', // Use 'invisible' for no visible widget
+        'callback': (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber to proceed
+          console.log("reCAPTCHA solved:", response);
+        },
+        'expired-callback': () => {
+          // reCAPTCHA expired. Ask user to solve again.
+          console.log("reCAPTCHA expired.");
+          recaptchaVerifier.clear(); // Clear the verifier to allow a new challenge
+        }
+      });
+
       globalConfirmation = await signInWithPhoneNumber(
         auth,
         `+91${phone}`,
-        null  // null works when testing is disabled
+        recaptchaVerifier // Pass the RecaptchaVerifier instance here
       );
       setStep(2);
       setCountdown(30);
@@ -64,6 +76,11 @@ export default function AuthPage({ onAuth }) {
       else if (err.message)
         msg = err.message;
       setError(msg);
+      // Important: Clear the reCAPTCHA if there's an error so the user can try again
+      const recaptchaWidgetId = recaptchaVerifier?.widgetId;
+      if (recaptchaVerifier && recaptchaWidgetId !== undefined) {
+          recaptchaVerifier.clear();
+      }
     }
     setLoading(false);
   };
@@ -308,6 +325,9 @@ export default function AuthPage({ onAuth }) {
         <p style={{ textAlign:"center", marginTop:20, fontSize:11, color:"#374151", lineHeight:1.6 }}>
           Squad Up — Udaipur's Pickup Game Network 🏟️
         </p>
+
+        {/* This div is crucial for RecaptchaVerifier to work */}
+        <div id="recaptcha-container"></div>
       </div>
     </div>
   );
