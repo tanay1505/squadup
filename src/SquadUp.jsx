@@ -837,7 +837,7 @@ export default function SquadUp() {
     <div style={{ minHeight:"100vh", background:"#0f0f0f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       <div style={{ fontSize:52, marginBottom:16 }}>🏟️</div>
-      <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:28, fontWeight:800, letterSpacing:2, color:"#fff" }}>Maidan</div>
+      <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:28, fontWeight:800, letterSpacing:2, color:"#fff" }}>SquadUp</div>
       <Spinner/>
     </div>
   );
@@ -857,7 +857,7 @@ export default function SquadUp() {
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <span style={{ fontSize:24 }}>🏟️</span>
               <div>
-                <div style={{ fontWeight:800, fontSize:18, color:"#111", lineHeight:1 }}>Maidan</div>
+                <div style={{ fontWeight:800, fontSize:18, color:"#111", lineHeight:1 }}>SquadUp</div>
                 <div style={{ fontSize:10, color:"#9ca3af", fontWeight:500 }}>Udaipur · Find your game</div>
               </div>
             </div>
