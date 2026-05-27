@@ -930,7 +930,7 @@ export default function SquadUp() {
     <div style={{ minHeight:"100vh", background:"#0a0a0f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:20 }}>
       <style>{CSS}</style>
       <div style={{ fontSize:56 }}>🏟️</div>
-      <div style={{ fontFamily:"'Syne',sans-serif", fontSize:32, fontWeight:800, color:"#fff" }}>Maidan</div>
+      <div style={{ fontFamily:"'Syne',sans-serif", fontSize:32, fontWeight:800, color:"#fff" }}>SquadUp</div>
       <Spinner size={28}/>
     </div>
   );
@@ -951,7 +951,7 @@ export default function SquadUp() {
               <div>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
                   <span style={{ fontSize:22 }}>🏟️</span>
-                  <span style={{ fontFamily:"'Syne',sans-serif", fontSize:22, fontWeight:800, color:"#fff" }}>Maidan</span>
+                  <span style={{ fontFamily:"'Syne',sans-serif", fontSize:22, fontWeight:800, color:"#fff" }}>SquadUp</span>
                 </div>
                 <div style={{ fontSize:12, color:"#555", fontFamily:"'DM Sans',sans-serif" }}>
                   <span className="live-dot" style={{ marginRight:5 }}/>
