@@ -31,7 +31,6 @@ const SPORT_COLORS = {
 // ─── STYLES ───────────────────────────────────────────────────────────────────
 
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #0a0a0f; }
   ::-webkit-scrollbar { display: none; }
@@ -66,7 +65,7 @@ const CSS = `
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: flex-end; justify-content: center; z-index: 999; backdrop-filter: blur(6px); animation: fadeIn 0.2s; }
   .modal-sheet { background: #13131a; border-radius: 24px 24px 0 0; width: 100%; max-width: 680px; max-height: 92vh; overflow-y: auto; animation: slideUp 0.3s; padding: 28px 24px 40px; }
   .modal-handle { width: 40px; height: 4px; background: #333; border-radius: 99px; margin: 0 auto 24px; }
-  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block; animation: pulse 1.5s infinite; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; display: inline-block; }
   .urgent-badge { background: linear-gradient(135deg,#f59e0b,#f97316); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 99px; letter-spacing: 0.5px; animation: pulse 2s infinite; }
 `;
 
@@ -239,10 +238,7 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact }) {
               <div style={{ fontSize:11, color:"#555", fontFamily:"'DM Sans',sans-serif" }}>Host</div>
               <div style={{ fontSize:13, fontWeight:600, color:"#ccc", fontFamily:"'DM Sans',sans-serif" }}>{game.host_name}</div>
             </div>
-            <div style={{ display:"flex", alignItems:"center", gap:4 }}>
-              <span className="live-dot"/>
-              <span style={{ fontSize:11, color:"#4ade80", fontFamily:"'DM Sans',sans-serif" }}>Live</span>
-            </div>
+
           </div>
           <div style={{ display:"flex", gap:8, alignItems:"center" }}>
             {game.cost_per_player > 0 && (
@@ -687,24 +683,7 @@ function ProfileScreen({ user, profile, myGames, onLogout }) {
     <div style={{ padding:"0 16px 100px", maxWidth:680, margin:"0 auto" }}>
       {/* Hero */}
       <div style={{ background:"linear-gradient(135deg,#1a0010,#0a001a)", borderRadius:24, padding:"28px 24px", marginBottom:20, border:"1px solid #2a0020", position:"relative", overflow:"hidden" }}>
-        <div
-style={{
-position:"absolute",
-right:-10,
-top:-10,
-opacity:0.08
-}}
->
-<img
-src="/icon-192.png"
-alt="logo"
-style={{
-width:"100px",
-height:"100px",
-borderRadius:"20px"
-}}
-/>
-</div>
+        <div style={{ position:"absolute", right:-20, top:-20, fontSize:120, opacity:0.04 }}>🏟️</div>
         <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:20 }}>
           <div style={{ width:64, height:64, borderRadius:20, background:"linear-gradient(135deg,#e11d48,#f43f5e)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, fontWeight:800, color:"#fff", fontFamily:"'Syne',sans-serif" }}>
             {(profile?.avatar||user.email[0]).toUpperCase()}
@@ -817,7 +796,6 @@ export default function SquadUp() {
   const [contactData, setContactData] = useState(null);
   const [loading, setLoading]         = useState(true);
   const [toast, setToast]             = useState({ msg:"", type:"" });
-  const [liveCount, setLiveCount]     = useState(0);
 
   const showToast = (msg, type="success") => {
     setToast({ msg, type });
@@ -834,16 +812,6 @@ export default function SquadUp() {
       else { setUser(null); setProfile(null); setLoading(false); }
     });
     return ()=>subscription.unsubscribe();
-  },[]);
-
-  // Simulate live player count
-  useEffect(()=>{
-    const base = Math.floor(Math.random()*20)+5;
-    setLiveCount(base);
-    const interval = setInterval(()=>{
-      setLiveCount(c=>c+Math.floor(Math.random()*3)-1);
-    },4000);
-    return ()=>clearInterval(interval);
   },[]);
 
   const loadProfile = async (id)=>{ const{data}=await supabase.from("profiles").select("*").eq("id",id).single(); setProfile(data); setLoading(false); };
@@ -945,25 +913,29 @@ export default function SquadUp() {
 
   if(loading) return (
     <div style={{ minHeight:"100vh", background:"#0a0a0f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:20 }}>
+      <link rel="preconnect" href="https://fonts.googleapis.com"/>
+      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
       <style>{CSS}</style>
-      <img
-src="/logo192.png"
-alt="SquadUp"
-style={{
-width:"56px",
-height:"56px",
-borderRadius:"16px"
-}}
-/>
-      <div style={{ fontFamily:"'Syne',sans-serif", fontSize:32, fontWeight:800, color:"#fff" }}>SquadUp</div>
+      <div style={{ width:52, height:52, borderRadius:16, background:"linear-gradient(135deg,#e11d48,#f43f5e)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, boxShadow:"0 8px 24px rgba(225,29,72,0.4)" }}>🏟️</div>
+      <div style={{ fontFamily:"'Syne',sans-serif", fontSize:28, fontWeight:800, color:"#fff", letterSpacing:"-0.5px" }}>Maidan</div>
       <Spinner size={28}/>
     </div>
   );
 
-  if(!user) return <><style>{CSS}</style><AuthPage onAuth={u=>{setUser(u);loadProfile(u.id);}}/></>;
+  if(!user) return (
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com"/>
+      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+      <style>{CSS}</style>
+      <AuthPage onAuth={u=>{setUser(u);loadProfile(u.id);}}/>
+    </>
+  );
 
   return (
     <>
+      <link rel="preconnect" href="https://fonts.googleapis.com"/>
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous"/>
+      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
       <style>{CSS}</style>
       <div style={{ minHeight:"100vh", background:"#0a0a0f", fontFamily:"'DM Sans',sans-serif", paddingBottom:80 }}>
 
@@ -973,25 +945,17 @@ borderRadius:"16px"
 
             {/* Header */}
             <div style={{ padding:"20px 0 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <div>
-                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                  <img
-src="/logo512.png"
-alt="SquadUp"
-style={{
-width:"40px",
-height:"40px",
-borderRadius:"12px",
-objectFit:"cover",
-boxShadow:"0 0 15px rgba(255,47,185,.4)"
-}}
-/>
-                  <span style={{ fontFamily:"'Syne',sans-serif", fontSize:22, fontWeight:800, color:"#fff" }}>SquadUp</span>
-                </div>
-                <div style={{ fontSize:12, color:"#555", fontFamily:"'DM Sans',sans-serif" }}>
-                  <span className="live-dot" style={{ marginRight:5 }}/>
-                  <span style={{ color:"#4ade80" }}>{liveCount} players online</span>
-                  <span style={{ color:"#555" }}> · Udaipur</span>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                {/* Logo mark */}
+                <div style={{
+                  width:38, height:38, borderRadius:12,
+                  background:"linear-gradient(135deg,#e11d48,#f43f5e)",
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:20, boxShadow:"0 4px 14px rgba(225,29,72,0.4)",
+                }}>🏟️</div>
+                <div>
+                  <div style={{ fontFamily:"'Syne',sans-serif", fontSize:20, fontWeight:800, color:"#fff", lineHeight:1, letterSpacing:"-0.5px" }}>Maidan</div>
+                  <div style={{ fontSize:11, color:"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:500, letterSpacing:"0.2px" }}>Udaipur · Find your game</div>
                 </div>
               </div>
               <div onClick={()=>setShowRequests(true)} style={{ position:"relative", cursor:"pointer", background:"#13131a", borderRadius:14, width:40, height:40, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, border:"1px solid #1e1e2a" }}>
@@ -1091,17 +1055,7 @@ boxShadow:"0 0 15px rgba(255,47,185,.4)"
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               {filtered.filter(g=>!g.is_urgent).length===0&&filtered.filter(g=>g.is_urgent).length===0 ? (
                 <div style={{ textAlign:"center", padding:"60px 20px", color:"#555" }}>
-                  <img
-src="/icon-192.png"
-alt="SquadUp"
-style={{
-width:"60px",
-height:"60px",
-borderRadius:"14px",
-marginBottom:"12px",
-boxShadow:"0 0 15px rgba(255,47,185,.4)"
-}}
-/>
+                  <div style={{ fontSize:52, marginBottom:12 }}>🏟️</div>
                   <div style={{ fontFamily:"'Syne',sans-serif", fontSize:20, fontWeight:800, color:"#fff", marginBottom:6 }}>No games yet</div>
                   <div style={{ fontSize:14, marginBottom:20 }}>Be the first to post one!</div>
                   <button className="btn-primary" style={{ width:"auto", padding:"12px 28px" }} onClick={()=>setShowPost(true)}>+ Post a Game</button>
