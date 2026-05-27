@@ -362,9 +362,18 @@ FIND • JOIN • PLAY
           )}
         </div>
 
-        <p style={{ textAlign:"center", marginTop:20, fontSize:11, color:"#374151", lineHeight:1.6 }}>
-          Squad Up — Udaipur's Pickup Game Network 🏟️
-        </p>
+      <p
+style={{
+textAlign:"center",
+marginTop:20,
+fontSize:12,
+color:"#6b7280",
+lineHeight:1.6,
+fontFamily:"Inter"
+}}
+>
+SquadUp • Find players. Complete your squad.
+</p>
 
         {/* This div is crucial for RecaptchaVerifier to work */}
         <div id="recaptcha-container"></div>
