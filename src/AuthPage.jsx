@@ -4,14 +4,22 @@ import { auth } from "./firebase";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth"; // Import RecaptchaVerifier
 
 const darkInput = {
-  width:"100%", padding:"11px 14px", borderRadius:12,
-  border:"1.5px solid #2a2a2a", fontSize:14,
-  fontFamily:"'DM Sans', sans-serif", outline:"none",
-  boxSizing:"border-box", color:"#fff", background:"#111",
+   width:"100%",
+  padding:"14px 16px",
+  borderRadius:16,
+  border:"1px solid rgba(255,255,255,.08)",
+  fontSize:14,
+  fontFamily:"Inter,sans-serif",
+  outline:"none",
+  boxSizing:"border-box",
+  color:"#fff",
+  background:"rgba(255,255,255,.04)",
+  backdropFilter:"blur(14px)",
+  transition:"all .25s ease"
 };
 const labelStyle = {
   display:"block", fontSize:11, fontWeight:700, color:"#9ca3af",
-  marginBottom:6, fontFamily:"'DM Sans', sans-serif",
+  marginBottom:6, fontFamily:"Inter, sans-serif",
   textTransform:"uppercase", letterSpacing:0.8,
 };
 
@@ -151,21 +159,53 @@ export default function AuthPage({ onAuth }) {
     <div style={{
       minHeight:"100vh", background:"#0f0f0f",
       display:"flex", alignItems:"center", justifyContent:"center",
-      padding:20, fontFamily:"'DM Sans', sans-serif",
+      padding:20, fontFamily:"Inter, sans-serif",
       position:"relative", overflow:"hidden",
     }}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
-      <div style={{ position:"absolute", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle,#22c55e18,transparent 70%)", top:-100, right:-100, pointerEvents:"none" }}/>
+      <div style={{ position:"absolute", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle,#FF2FB918,transparent 70%)", top:-100, right:-100, pointerEvents:"none" }}/>
       <div style={{ position:"absolute", width:400, height:400, borderRadius:"50%", background:"radial-gradient(circle,#f59e0b12,transparent 70%)", bottom:-80, left:-80, pointerEvents:"none" }}/>
 
       <div style={{ width:"100%", maxWidth:420, position:"relative", zIndex:1 }}>
 
-        <div style={{ textAlign:"center", marginBottom:36 }}>
-          <div style={{ fontSize:48, marginBottom:8 }}>🏟️</div>
-          <div style={{ fontFamily:"'Bebas Neue', sans-serif", fontSize:42, letterSpacing:4, color:"#fff", lineHeight:1 }}>SQUAD UP</div>
-          <div style={{ fontSize:13, color:"#6b7280", marginTop:6 }}>📍 Udaipur, Rajasthan</div>
-        </div>
+        <div style={{
+textAlign:"center",
+marginBottom:36
+}}>
+
+<img
+src="/icon-192.png"
+style={{
+width:85,
+height:85,
+borderRadius:24,
+boxShadow:"0 0 35px rgba(255,47,185,.45)"
+}}
+/>
+
+<div style={{
+fontFamily:"Space Grotesk",
+fontSize:42,
+fontWeight:800,
+marginTop:16,
+background:"linear-gradient(90deg,#FF2FB9,#9A5CFF,#00D9FF)",
+WebkitBackgroundClip:"text",
+WebkitTextFillColor:"transparent"
+}}>
+SquadUp
+</div>
+
+<div style={{
+fontSize:13,
+color:"#9ca3af",
+marginTop:8,
+letterSpacing:2
+}}>
+FIND • JOIN • PLAY
+</div>
+
+</div>
 
         <div style={{ background:"#1a1a1a", borderRadius:24, padding:32, border:"1px solid #2a2a2a", boxShadow:"0 24px 80px rgba(0,0,0,0.5)" }}>
 
@@ -173,10 +213,10 @@ export default function AuthPage({ onAuth }) {
             <div>
               <div style={{ textAlign:"center", marginBottom:28 }}>
                 <div style={{ fontSize:48, marginBottom:10 }}>📱</div>
-                <div style={{ fontFamily:"'Bebas Neue', sans-serif", fontSize:26, color:"#fff", letterSpacing:1 }}>CHECK YOUR PHONE</div>
+                <div style={{ fontFamily:"'Space Grotesk', sans-serif", fontSize:26, color:"#fff", letterSpacing:1 }}>CHECK YOUR PHONE</div>
                 <div style={{ fontSize:13, color:"#6b7280", marginTop:8, lineHeight:1.8 }}>
                   OTP sent to<br/>
-                  <b style={{ color:"#22c55e", fontSize:18 }}>+91 {phone}</b>
+                  <b style={{ color:"#FF2FB9", fontSize:18 }}>+91 {phone}</b>
                 </div>
               </div>
 
@@ -190,7 +230,7 @@ export default function AuthPage({ onAuth }) {
                   style={{
                     ...darkInput, fontSize:30, letterSpacing:14,
                     textAlign:"center", padding:"18px 14px", fontWeight:800,
-                    borderColor: otp.length===6 ? "#22c55e" : "#2a2a2a", borderWidth:2,
+                    borderColor: otp.length===6 ? "#FF2FB9" : "#2a2a2a", borderWidth:2,
                   }}
                   onKeyDown={e=>e.key==="Enter"&&verifyOtp()}
                 />
@@ -198,7 +238,7 @@ export default function AuthPage({ onAuth }) {
 
               <div style={{ display:"flex", justifyContent:"center", gap:8, marginBottom:20 }}>
                 {[0,1,2,3,4,5].map(i=>(
-                  <div key={i} style={{ width:10, height:10, borderRadius:"50%", background: i < otp.length ? "#22c55e" : "#2a2a2a", transition:"background 0.15s" }}/>
+                  <div key={i} style={{ width:10, height:10, borderRadius:"50%", background: i < otp.length ? "#FF2FB9" : "#2a2a2a", transition:"background 0.15s" }}/>
                 ))}
               </div>
 
@@ -206,18 +246,18 @@ export default function AuthPage({ onAuth }) {
 
               <button onClick={verifyOtp} disabled={loading||otp.length<6} style={{
                 width:"100%",
-                background: otp.length<6||loading ? "#2a2a2a" : "linear-gradient(135deg,#22c55e,#16a34a)",
+                background: otp.length<6||loading ? "#2a2a2a" : "linear-gradient(135deg,#FF2FB9,#9A5CFF)",
                 color: otp.length<6||loading ? "#6b7280" : "#fff",
                 border:"none", borderRadius:14, padding:"15px 0", fontSize:16, fontWeight:800,
                 cursor: otp.length<6||loading ? "not-allowed" : "pointer",
-                fontFamily:"'Bebas Neue', sans-serif", letterSpacing:2,
+                fontFamily:"'Space Grotesk', sans-serif", letterSpacing:2,
               }}>{loading ? "VERIFYING..." : "VERIFY & JOIN ✓"}</button>
 
               <p style={{ textAlign:"center", marginTop:16, fontSize:13, color:"#6b7280" }}>
                 Didn't receive it?{" "}
                 {countdown > 0
                   ? <span style={{ color:"#4b5563" }}>Resend in {countdown}s</span>
-                  : <span onClick={sendOtp} style={{ color:"#22c55e", fontWeight:700, cursor:"pointer" }}>Resend OTP</span>
+                  : <span onClick={sendOtp} style={{ color:"#FF2FB9", fontWeight:700, cursor:"pointer" }}>Resend OTP</span>
                 }
               </p>
               <p style={{ textAlign:"center", marginTop:6, fontSize:12 }}>
@@ -231,10 +271,10 @@ export default function AuthPage({ onAuth }) {
                 {["login","signup"].map(m=>(
                   <button key={m} onClick={()=>{ setMode(m); setError(""); }} style={{
                     flex:1, padding:"10px 0", borderRadius:11, border:"none",
-                    background:mode===m?"#22c55e":"transparent",
+                    background:mode===m?"#FF2FB9":"transparent",
                     color:mode===m?"#fff":"#6b7280",
                     fontWeight:800, fontSize:14, cursor:"pointer",
-                    fontFamily:"'DM Sans', sans-serif", transition:"all 0.2s",
+                    fontFamily:"Inter, sans-serif", transition:"all 0.2s",
                   }}>{m==="login" ? "Log In" : "Sign Up"}</button>
                 ))}
               </div>
@@ -244,28 +284,28 @@ export default function AuthPage({ onAuth }) {
                   <div>
                     <label style={labelStyle}>Full Name</label>
                     <input value={name} onChange={e=>setName(e.target.value)} placeholder="Rahul Meena" style={darkInput}
-                      onFocus={e=>e.target.style.borderColor="#22c55e"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
+                      onFocus={e=>e.target.style.borderColor="#FF2FB9"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
                   </div>
                   <div>
                     <label style={labelStyle}>Email</label>
                     <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" type="email" style={darkInput}
-                      onFocus={e=>e.target.style.borderColor="#22c55e"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
+                      onFocus={e=>e.target.style.borderColor="#FF2FB9"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
                   </div>
                   <div>
                     <label style={labelStyle}>Password</label>
                     <input value={password} onChange={e=>setPass(e.target.value)} placeholder="••••••••" type="password" style={darkInput}
-                      onFocus={e=>e.target.style.borderColor="#22c55e"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
+                      onFocus={e=>e.target.style.borderColor="#FF2FB9"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
                   </div>
                   <div>
                     <label style={labelStyle}>
                       Mobile Number
-                      <span style={{ color:"#22c55e", marginLeft:6, fontSize:10 }}>OTP WILL BE SENT HERE</span>
+                      <span style={{ color:"#FF2FB9", marginLeft:6, fontSize:10 }}>OTP WILL BE SENT HERE</span>
                     </label>
                     <div style={{ display:"flex", gap:8 }}>
                       <div style={{ ...darkInput, width:"auto", padding:"11px 14px", color:"#6b7280", flexShrink:0 }}>🇮🇳 +91</div>
                       <input value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/g,"").slice(0,10))}
                         placeholder="9876543210" type="tel" style={darkInput}
-                        onFocus={e=>e.target.style.borderColor="#22c55e"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}
+                        onFocus={e=>e.target.style.borderColor="#FF2FB9"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}
                         onKeyDown={e=>e.key==="Enter"&&handleSignupStep1()}/>
                     </div>
                   </div>
@@ -274,16 +314,16 @@ export default function AuthPage({ onAuth }) {
 
                   <button onClick={handleSignupStep1} disabled={loading} style={{
                     width:"100%",
-                    background: loading ? "#2a2a2a" : "linear-gradient(135deg,#22c55e,#16a34a)",
+                    background: loading ? "#2a2a2a" : "linear-gradient(135deg,#FF2FB9,#9A5CFF)",
                     color: loading ? "#6b7280" : "#fff",
                     border:"none", borderRadius:14, padding:"14px 0", fontSize:16, fontWeight:800,
                     cursor: loading ? "not-allowed" : "pointer",
-                    fontFamily:"'Bebas Neue', sans-serif", letterSpacing:2,
+                    fontFamily:"'Space Grotesk', sans-serif", letterSpacing:2,
                   }}>{loading ? "SENDING OTP..." : "SEND OTP →"}</button>
 
                   <p style={{ textAlign:"center", fontSize:13, color:"#6b7280", margin:0 }}>
                     Already have an account?{" "}
-                    <span onClick={()=>{ setMode("login"); setError(""); }} style={{ color:"#22c55e", fontWeight:700, cursor:"pointer" }}>Log In</span>
+                    <span onClick={()=>{ setMode("login"); setError(""); }} style={{ color:"#FF2FB9", fontWeight:700, cursor:"pointer" }}>Log In</span>
                   </p>
                 </div>
 
@@ -292,12 +332,12 @@ export default function AuthPage({ onAuth }) {
                   <div>
                     <label style={labelStyle}>Email</label>
                     <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" type="email" style={darkInput}
-                      onFocus={e=>e.target.style.borderColor="#22c55e"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
+                      onFocus={e=>e.target.style.borderColor="#FF2FB9"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}/>
                   </div>
                   <div>
                     <label style={labelStyle}>Password</label>
                     <input value={password} onChange={e=>setPass(e.target.value)} placeholder="••••••••" type="password" style={darkInput}
-                      onFocus={e=>e.target.style.borderColor="#22c55e"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}
+                      onFocus={e=>e.target.style.borderColor="#FF2FB9"} onBlur={e=>e.target.style.borderColor="#2a2a2a"}
                       onKeyDown={e=>e.key==="Enter"&&handleEmailLogin()}/>
                   </div>
 
@@ -305,16 +345,16 @@ export default function AuthPage({ onAuth }) {
 
                   <button onClick={handleEmailLogin} disabled={loading} style={{
                     width:"100%",
-                    background: loading ? "#2a2a2a" : "linear-gradient(135deg,#22c55e,#16a34a)",
+                    background: loading ? "#2a2a2a" : "linear-gradient(135deg,#FF2FB9,#9A5CFF)",
                     color: loading ? "#6b7280" : "#fff",
                     border:"none", borderRadius:14, padding:"14px 0", fontSize:16, fontWeight:800,
                     cursor: loading ? "not-allowed" : "pointer",
-                    fontFamily:"'Bebas Neue', sans-serif", letterSpacing:2,
+                    fontFamily:"'Space Grotesk', sans-serif", letterSpacing:2,
                   }}>{loading ? "PLEASE WAIT..." : "LET'S PLAY →"}</button>
 
                   <p style={{ textAlign:"center", fontSize:13, color:"#6b7280", margin:0 }}>
                     Don't have an account?{" "}
-                    <span onClick={()=>{ setMode("signup"); setError(""); }} style={{ color:"#22c55e", fontWeight:700, cursor:"pointer" }}>Sign Up</span>
+                    <span onClick={()=>{ setMode("signup"); setError(""); }} style={{ color:"#FF2FB9", fontWeight:700, cursor:"pointer" }}>Sign Up</span>
                   </p>
                 </div>
               )}
