@@ -954,6 +954,13 @@ export default function SquadUp() {
   const showToast = (msg, type="success") => { setToast({ msg, type }); setTimeout(()=>setToast({ msg:"", type:"" }), 3500); };
 
   useEffect(()=>{
+
+if(Notification.permission!=="granted"){
+Notification.requestPermission();
+}
+
+},[]);
+  useEffect(()=>{
     supabase.auth.getSession().then(({ data:{ session } })=>{
       if (session?.user) { setUser(session.user); loadProfile(session.user.id); }
       else setLoading(false);
@@ -1014,7 +1021,10 @@ export default function SquadUp() {
       join_type:form.joinType, cost_per_player:+form.costPerPlayer, is_urgent:form.isUrgent,
     }]);
     if(error){ showToast("Failed to post.", "error"); return; }
-    showToast("Game posted! 🎉"); setShowPost(false); loadGames();
+    showToast("Game posted! 🎉"); sendPushNotification(
+"New Game Posted 🚀",
+form.title
+);setShowPost(false); loadGames();
   };
 
  const handleJoinConfirm = async(game, note)=>{
@@ -1087,11 +1097,39 @@ export default function SquadUp() {
       confirmLabel:"Yes, Cancel Game",
       confirmColor:"#e11d48",
       onConfirm: async()=>{
-        await supabase.from("requests").delete().eq("game_id",game.id);
-        await supabase.from("games").delete().eq("id",game.id);
-        showToast("Game cancelled. Players notified.");
-        setConfirmData(null); loadGames(); loadRequests();
-      },
+
+const { error:reqErr } = await supabase
+.from("requests")
+.delete()
+.eq("game_id",game.id);
+
+if(reqErr){
+showToast(reqErr.message,"error");
+return;
+}
+
+const { error:gameErr } = await supabase
+.from("games")
+.delete()
+.eq("id",game.id);
+
+if(gameErr){
+showToast(gameErr.message,"error");
+return;
+}
+
+showToast("Game cancelled successfully.");
+sendPushNotification(
+"Game Cancelled ❌",
+game.title
+);
+
+setConfirmData(null);
+
+await loadGames();
+await loadRequests();
+
+},
     });
   };
 
@@ -1102,19 +1140,50 @@ export default function SquadUp() {
       message:`You'll lose your spot in "${game.title}" and the host will be notified.`,
       confirmLabel:"Yes, Leave Game",
       confirmColor:"#e11d48",
-      onConfirm: async()=>{
-       if(req){
-await supabase
+     onConfirm: async()=>{
+
+if(req){
+
+const { error } = await supabase
 .from("requests")
 .delete()
 .eq("id",req.id);
+
+if(error){
+showToast(error.message,"error");
+return;
 }
-        if(game.join_type==="direct" && game.filled_slots>0){
-          await supabase.from("games").update({filled_slots:game.filled_slots-1}).eq("id",game.id);
-        }
-        showToast("You've left the game.");
-        setConfirmData(null); loadGames(); loadRequests();
-      },
+
+}
+
+if(game.join_type==="direct" && game.filled_slots>0){
+
+const { error } = await supabase
+.from("games")
+.update({
+filled_slots:game.filled_slots-1
+})
+.eq("id",game.id);
+
+if(error){
+showToast(error.message,"error");
+return;
+}
+
+}
+
+showToast("You left the game.");
+sendPushNotification(
+"Player Left",
+game.title
+);
+
+setConfirmData(null);
+
+await loadGames();
+await loadRequests();
+
+},
     });
   };
 
@@ -1122,12 +1191,18 @@ await supabase
     await supabase.from("requests").update({status:"approved"}).eq("id",req.id);
     const game=games.find(g=>g.id===req.game_id);
     if(game) await supabase.from("games").update({filled_slots:game.filled_slots+1}).eq("id",game.id);
-    showToast(`${req.user_name} approved! ✅`); loadGames(); loadRequests();
+    showToast(`${req.user_name} approved! ✅`); sendPushNotification(
+"Player Approved ✅",
+`${req.user_name} joined the game`
+); loadGames(); loadRequests();
   };
 
   const handleReject = async req=>{
     await supabase.from("requests").update({status:"rejected"}).eq("id",req.id);
-    showToast("Request declined."); loadRequests();
+    showToast("Request declined."); sendPushNotification(
+"Request Declined",
+`${req.user_name} was declined`
+); loadRequests();
   };
 
   const handleViewContact = async(game,isHost)=>{
