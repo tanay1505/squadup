@@ -687,7 +687,24 @@ function ProfileScreen({ user, profile, myGames, onLogout }) {
     <div style={{ padding:"0 16px 100px", maxWidth:680, margin:"0 auto" }}>
       {/* Hero */}
       <div style={{ background:"linear-gradient(135deg,#1a0010,#0a001a)", borderRadius:24, padding:"28px 24px", marginBottom:20, border:"1px solid #2a0020", position:"relative", overflow:"hidden" }}>
-        <div style={{ position:"absolute", right:-20, top:-20, fontSize:120, opacity:0.04 }}>🏟️</div>
+        <div
+style={{
+position:"absolute",
+right:-10,
+top:-10,
+opacity:0.08
+}}
+>
+<img
+src="/icon-192.png"
+alt="logo"
+style={{
+width:"100px",
+height:"100px",
+borderRadius:"20px"
+}}
+/>
+</div>
         <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:20 }}>
           <div style={{ width:64, height:64, borderRadius:20, background:"linear-gradient(135deg,#e11d48,#f43f5e)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, fontWeight:800, color:"#fff", fontFamily:"'Syne',sans-serif" }}>
             {(profile?.avatar||user.email[0]).toUpperCase()}
@@ -1074,7 +1091,17 @@ boxShadow:"0 0 15px rgba(255,47,185,.4)"
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               {filtered.filter(g=>!g.is_urgent).length===0&&filtered.filter(g=>g.is_urgent).length===0 ? (
                 <div style={{ textAlign:"center", padding:"60px 20px", color:"#555" }}>
-                  <div style={{ fontSize:52, marginBottom:12 }}>🏟️</div>
+                  <img
+src="/icon-192.png"
+alt="SquadUp"
+style={{
+width:"60px",
+height:"60px",
+borderRadius:"14px",
+marginBottom:"12px",
+boxShadow:"0 0 15px rgba(255,47,185,.4)"
+}}
+/>
                   <div style={{ fontFamily:"'Syne',sans-serif", fontSize:20, fontWeight:800, color:"#fff", marginBottom:6 }}>No games yet</div>
                   <div style={{ fontSize:14, marginBottom:20 }}>Be the first to post one!</div>
                   <button className="btn-primary" style={{ width:"auto", padding:"12px 28px" }} onClick={()=>setShowPost(true)}>+ Post a Game</button>
