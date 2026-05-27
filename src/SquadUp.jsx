@@ -929,7 +929,15 @@ export default function SquadUp() {
   if(loading) return (
     <div style={{ minHeight:"100vh", background:"#0a0a0f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:20 }}>
       <style>{CSS}</style>
-      <div style={{ fontSize:56 }}>🏟️</div>
+      <img
+src="/logo192.png"
+alt="SquadUp"
+style={{
+width:"56px",
+height:"56px",
+borderRadius:"16px"
+}}
+/>
       <div style={{ fontFamily:"'Syne',sans-serif", fontSize:32, fontWeight:800, color:"#fff" }}>SquadUp</div>
       <Spinner size={28}/>
     </div>
@@ -950,7 +958,17 @@ export default function SquadUp() {
             <div style={{ padding:"20px 0 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                  <span style={{ fontSize:22 }}>🏟️</span>
+                  <img
+src="/logo512.png"
+alt="SquadUp"
+style={{
+width:"40px",
+height:"40px",
+borderRadius:"12px",
+objectFit:"cover",
+boxShadow:"0 0 15px rgba(255,47,185,.4)"
+}}
+/>
                   <span style={{ fontFamily:"'Syne',sans-serif", fontSize:22, fontWeight:800, color:"#fff" }}>SquadUp</span>
                 </div>
                 <div style={{ fontSize:12, color:"#555", fontFamily:"'DM Sans',sans-serif" }}>
