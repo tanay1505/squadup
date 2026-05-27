@@ -145,7 +145,14 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
 
   const getBtn = () => {
     if (isHost) return null;
-    if (myReq?.status==="pending")  return { label:"⏳ Pending",  bg:"#fef9c3", tc:"#92400e", disabled:true };
+   if(myReq?.status==="pending")
+return{
+label:"Cancel Request",
+bg:"#fee2e2",
+tc:"#dc2626",
+disabled:false,
+action:"leave"
+};
     if (myReq?.status==="approved") return { label:"Leave Game", bg:"#fee2e2", tc:"#dc2626", disabled:false, action:"leave" };
     if (myReq?.status==="rejected") return { label:"Declined",   bg:"#f3f4f6", tc:"#9ca3af", disabled:true };
     if (isFull) return { label:"Full", bg:"#f3f4f6", tc:"#9ca3af", disabled:true };
@@ -632,10 +639,64 @@ function RequestsPanel({ onClose, onApprove, onReject, requests, games }) {
               )}
             </div>
             {r.note && <div style={{ background:"#fff", borderRadius:10, padding:"10px 12px", marginBottom:10, fontSize:13, color:"#374151", fontFamily:"'DM Sans',sans-serif", fontStyle:"italic", border:"1px solid #f0f0f0" }}>"{r.note}"</div>}
-            {tab==="pending" && (
+            {(tab==="pending" || r.status==="rejected") && (
               <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>onReject(r)} style={{ flex:1, background:"#fff", color:"#dc2626", border:"1.5px solid #fecaca", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Decline</button>
-                <button onClick={()=>onApprove(r)} style={{ flex:2, background:"linear-gradient(135deg,#16a34a,#15803d)", color:"#fff", border:"none", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>✓ Approve</button>
+                {r.status==="rejected" ? (
+                  <button
+                    onClick={()=>onApprove(r)}
+                    style={{
+                      flex:2,
+                      background:"linear-gradient(135deg,#16a34a,#15803d)",
+                      color:"#fff",
+                      border:"none",
+                      borderRadius:10,
+                      padding:"9px 0",
+                      fontSize:13,
+                      fontWeight:700,
+                      cursor:"pointer",
+                      fontFamily:"'DM Sans',sans-serif"
+                    }}
+                  >
+                    ↺ Re-Approve
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={()=>onReject(r)}
+                      style={{
+                        flex:1,
+                        background:"#fff1f2",
+                        color:"#dc2626",
+                        border:"1px solid #fecdd3",
+                        borderRadius:10,
+                        padding:"9px 0",
+                        fontSize:13,
+                        fontWeight:700,
+                        cursor:"pointer",
+                        fontFamily:"'DM Sans',sans-serif"
+                      }}
+                    >
+                      Decline
+                    </button>
+                    <button
+                      onClick={()=>onApprove(r)}
+                      style={{
+                        flex:2,
+                        background:"linear-gradient(135deg,#16a34a,#15803d)",
+                        color:"#fff",
+                        border:"none",
+                        borderRadius:10,
+                        padding:"9px 0",
+                        fontSize:13,
+                        fontWeight:700,
+                        cursor:"pointer",
+                        fontFamily:"'DM Sans',sans-serif"
+                      }}
+                    >
+                      ✓ Approve
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -956,16 +1017,67 @@ export default function SquadUp() {
     showToast("Game posted! 🎉"); setShowPost(false); loadGames();
   };
 
-  const handleJoinConfirm = async(game, note)=>{
+ const handleJoinConfirm = async(game, note)=>{
+
+    const existing = requests.find(
+      r=>r.game_id===game.id &&
+      r.user_id===user.id &&
+      r.status!=="left"
+    );
+
+    if(existing){
+      showToast("You already requested this game.","error");
+      return;
+    }
+
     if(game.join_type==="direct"){
-      await supabase.from("games").update({filled_slots:game.filled_slots+1}).eq("id",game.id);
+
+      const {error}=await supabase
+      .from("games")
+      .update({
+        filled_slots:game.filled_slots+1
+      })
+      .eq("id",game.id);
+
+      if(error){
+        showToast("Failed to join.","error");
+        return;
+      }
+
+      await supabase.from("requests").insert([{
+        game_id:game.id,
+        user_id:user.id,
+        user_name:profile?.name||user.email,
+        status:"approved"
+      }]);
+
       showToast(`Joined ${game.title}! 🏟️`);
-    } else {
-      await supabase.from("requests").insert([{ game_id:game.id, user_id:user.id, user_name:profile?.name||user.email, note:note||null, status:"pending" }]);
+
+    }else{
+
+      const {error}=await supabase
+      .from("requests")
+      .insert([{
+        game_id:game.id,
+        user_id:user.id,
+        user_name:profile?.name||user.email,
+        note:note||null,
+        status:"pending"
+      }]);
+
+      if(error){
+        showToast(error.message,"error");
+        return;
+      }
+
       showToast("Request sent! 📩");
     }
-    setJoining(null); loadGames(); loadRequests();
-  };
+
+    setJoining(null);
+
+    await loadGames();
+    await loadRequests();
+};
 
   // Host cancels game
   const handleCancelGame = game => {
@@ -991,7 +1103,12 @@ export default function SquadUp() {
       confirmLabel:"Yes, Leave Game",
       confirmColor:"#e11d48",
       onConfirm: async()=>{
-        if(req){ await supabase.from("requests").update({status:"left"}).eq("id",req.id); }
+       if(req){
+await supabase
+.from("requests")
+.delete()
+.eq("id",req.id);
+}
         if(game.join_type==="direct" && game.filled_slots>0){
           await supabase.from("games").update({filled_slots:game.filled_slots-1}).eq("id",game.id);
         }
