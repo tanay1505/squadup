@@ -1069,10 +1069,14 @@ console.log(reqErr);
 throw reqErr;
 }
 
-const { error:gameErr } = await supabase
+const { data:deletedGame, error:gameErr } = await supabase
 .from("games")
 .delete()
-.eq("id",game.id);
+.eq("id",game.id)
+.select();
+
+console.log("DELETED GAME", deletedGame);
+console.log("DELETE ERROR", gameErr);
 
 if(gameErr){
 console.log(gameErr);
