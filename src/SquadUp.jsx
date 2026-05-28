@@ -1049,6 +1049,7 @@ loadGames();
   };
 
   // Host cancels game
+  console.log(game)
   const handleCancelGame = game => {
     setConfirmData({
       title:"Cancel This Game?",
@@ -1072,7 +1073,7 @@ throw reqErr;
 const { data:deletedGame, error:gameErr } = await supabase
 .from("games")
 .delete()
-.eq("id",game.id)
+.eq("id", game?.id || game?.game_id)
 .select();
 
 console.log("DELETED GAME", deletedGame);
