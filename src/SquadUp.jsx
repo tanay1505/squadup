@@ -1049,8 +1049,8 @@ loadGames();
   };
 
   // Host cancels game
-  console.log(game)
   const handleCancelGame = game => {
+    console.log(game)
     setConfirmData({
       title:"Cancel This Game?",
       message:`This will remove "${game.title}" and notify all players that it's been cancelled.`,
