@@ -948,9 +948,15 @@ loadGames();
 
 if(payload.eventType==="DELETE"){
 
+setGames(prev =>
+  prev.filter(g => g.id !== payload.old.id)
+);
+
+showToast("Game removed");
+
 sendNotif(
-"Game Cancelled ❌",
-"A game was cancelled"
+  "Game Cancelled ❌",
+  "A game was cancelled"
 );
 
 }
@@ -1069,7 +1075,7 @@ if (reqErr || gameErr) {
 setGames(prev => prev.filter(g => g.id !== game.id));
 
 showToast("Game cancelled successfully.");
-        setConfirmData(null); loadGames(); loadRequests();
+        setConfirmData(null); setConfirmData(null); loadRequests();
       },
     });
   };
