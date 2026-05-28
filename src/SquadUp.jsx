@@ -154,6 +154,9 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
   const isApproved = myReq?.status==="approved";
   const isDirect   = game.join_type==="direct";
   const pct = Math.min((game.filled_slots/game.total_slots)*100,100);
+  const isUrgent =
+  game.title?.includes("⚡") ||
+  game.is_urgent === true;
 
   const getBtn = () => {
     if (isHost) return null;
