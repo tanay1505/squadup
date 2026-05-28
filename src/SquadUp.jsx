@@ -154,7 +154,6 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
   const isApproved = myReq?.status==="approved";
   const isDirect   = game.join_type==="direct";
   const pct = Math.min((game.filled_slots/game.total_slots)*100,100);
-  const isUrgent = game.title?.includes("⚡");
 
   const getBtn = () => {
     if (isHost) return null;
@@ -869,10 +868,10 @@ function ActivityScreen({ myRequests, hostRequests, games, onApprove, onReject }
                   )}
                 </div>
                 {r.note && <div style={{ background:"#fafafa", borderRadius:10, padding:"8px 12px", marginBottom:10, fontSize:13, color:"#374151", fontFamily:"'DM Sans',sans-serif", fontStyle:"italic", border:"1px solid #f0f0f0" }}>"{r.note}"</div>}
-                {r.status==="pending" && (
+                {(r.status==="pending" || r.status==="rejected") && (
                   <div style={{ display:"flex", gap:8 }}>
                     <button onClick={()=>onReject(r)} style={{ flex:1, background:"#fff1f2", color:"#dc2626", border:"1px solid #fecdd3", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Decline</button>
-                    <button onClick={()=>onApprove(r)} style={{ flex:2, background:"linear-gradient(135deg,#16a34a,#15803d)", color:"#fff", border:"none", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>✓ Approve</button>
+                    <button onClick={()=>onApprove(r)} style={{ flex:2, background:"linear-gradient(135deg,#16a34a,#15803d)", color:"#fff", border:"none", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>{r.status==="rejected" ? "↺ Reapprove" : "✓ Approve"}</button>
                   </div>
                 )}
               </div>
@@ -925,27 +924,85 @@ export default function SquadUp() {
 
   // Realtime
   useEffect(()=>{
-    if(!user)return;
-    const ch = supabase.channel("games-rt")
-      .on("postgres_changes",{event:"INSERT",schema:"public",table:"games"},p=>{
-        if(p.new.host_id!==user.id){ setGames(prev=>[p.new,...prev]); showToast(`New game: ${p.new.title}!`); sendNotif('New Game Posted! 🏟️', p.new.title + ' — ' + (p.new.area||'')); }
-      })
-      .on("postgres_changes",{event:"DELETE",schema:"public",table:"games"},p=>{
-        setGames(prev=>prev.filter(g=>g.id!==p.old.id));
-        showToast("A game was cancelled.", "error");
-        sendNotif("Game Cancelled", "A game you were part of has been cancelled.");
-      })
-      .subscribe();
-    return ()=>supabase.removeChannel(ch);
-  },[user]);
+
+if(!user) return;
+
+const ch = supabase
+.channel("games-rt")
+
+.on(
+"postgres_changes",
+{
+event:"*",
+schema:"public",
+table:"games"
+},
+payload=>{
+
+console.log("games realtime",payload);
+
+loadGames();
+
+if(payload.eventType==="DELETE"){
+
+sendNotif(
+"Game Cancelled ❌",
+"A game was cancelled"
+);
+
+}
+
+if(payload.eventType==="INSERT"){
+
+sendNotif(
+"New Game Posted 🎮",
+"Someone posted a new game"
+);
+
+}
+
+}
+)
+
+.subscribe();
+
+return ()=>supabase.removeChannel(ch);
+
+},[user]);
 
   useEffect(()=>{
     if(!user)return;
     const ch = supabase.channel("req-rt")
-      .on("postgres_changes",{event:"UPDATE",schema:"public",table:"requests"},p=>{
+      .on("postgres_changes",{event:"*",schema:"public",table:"requests"},p=>{
         if(p.new.user_id===user.id){
           loadRequests();
+          if(p.eventType==="INSERT"){
+
+showToast("New join request received 📩");
+
+sendNotif(
+"New Join Request 📩",
+"Someone requested to join"
+);
+
+loadRequests();
+loadGames();
+
+}
           if(p.new.status==="approved"){ showToast("Your request was approved! ✅"); sendNotif("Approved! ✅", "You got a spot. Check contact info on the game card."); } else if(p.new.status==="rejected"){ showToast("Your request was declined.", "error"); sendNotif("Request Declined", "The host could not take you this time."); }
+          if(p.new.status==="rejected"){
+
+showToast("Request rejected");
+
+sendNotif(
+"Request Rejected ❌",
+"Host declined your request"
+);
+
+loadRequests();
+loadGames();
+
+}
         }
       }).subscribe();
     return ()=>supabase.removeChannel(ch);
@@ -990,9 +1047,25 @@ export default function SquadUp() {
       confirmLabel:"Yes, Cancel Game",
       confirmColor:"#e11d48",
       onConfirm: async()=>{
-        await supabase.from("requests").delete().eq("game_id",game.id);
-        await supabase.from("games").delete().eq("id",game.id);
-        showToast("Game cancelled. Players notified.");
+        const { error: reqErr } = await supabase
+  .from("requests")
+  .delete()
+  .eq("game_id", game.id);
+
+const { error: gameErr } = await supabase
+  .from("games")
+  .delete()
+  .eq("id", game.id);
+
+if (reqErr || gameErr) {
+  console.log(reqErr || gameErr);
+  showToast("Failed to cancel game", "error");
+  return;
+}
+
+setGames(prev => prev.filter(g => g.id !== game.id));
+
+showToast("Game cancelled successfully.");
         setConfirmData(null); loadGames(); loadRequests();
       },
     });
@@ -1020,13 +1093,36 @@ export default function SquadUp() {
     await supabase.from("requests").update({status:"approved"}).eq("id",req.id);
     const game=games.find(g=>g.id===req.game_id);
     if(game) await supabase.from("games").update({filled_slots:game.filled_slots+1}).eq("id",game.id);
-    showToast(`${req.user_name} approved! ✅`); loadGames(); loadRequests();
+    showToast(`${req.user_name} approved! ✅`);
+    sendNotif(
+  "Request Approved ✅",
+  `You were approved for ${game?.title || "a game"}`
+);loadGames(); loadRequests();
   };
 
-  const handleReject = async req=>{
-    await supabase.from("requests").update({status:"rejected"}).eq("id",req.id);
-    showToast("Request declined."); loadRequests();
-  };
+  const handleReject = async req => {
+  const { error } = await supabase
+    .from("requests")
+    .update({
+      status: "rejected",
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", req.id);
+
+  if (error) {
+    showToast("Failed to reject request", "error");
+    return;
+  }
+
+  showToast("Request declined.");
+
+  sendNotif(
+    "Request Declined ❌",
+    "Host declined your join request."
+  );
+
+  loadRequests();
+};
 
   const handleViewContact = async(game,isHost)=>{
     if(isHost){
