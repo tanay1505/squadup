@@ -1056,26 +1056,50 @@ loadGames();
       confirmLabel:"Yes, Cancel Game",
       confirmColor:"#e11d48",
       onConfirm: async()=>{
-        const { error: reqErr } = await supabase
-  .from("requests")
-  .delete()
-  .eq("game_id", game.id);
 
-const { error: gameErr } = await supabase
-  .from("games")
-  .delete()
-  .eq("id", game.id);
+try{
 
-if (reqErr || gameErr) {
-  console.log(reqErr || gameErr);
-  showToast("Failed to cancel game", "error");
-  return;
+const { error:reqErr } = await supabase
+.from("requests")
+.delete()
+.eq("game_id",game.id);
+
+if(reqErr){
+console.log(reqErr);
+throw reqErr;
 }
 
-setGames(prev => prev.filter(g => g.id !== game.id));
+const { error:gameErr } = await supabase
+.from("games")
+.delete()
+.eq("id",game.id);
+
+if(gameErr){
+console.log(gameErr);
+throw gameErr;
+}
+
+setGames(prev =>
+prev.filter(g=>g.id!==game.id)
+);
 
 showToast("Game cancelled successfully.");
-        setConfirmData(null); setConfirmData(null); loadRequests();
+
+}catch(err){
+
+console.log(err);
+
+showToast(
+err.message || "Failed to cancel game",
+"error"
+);
+
+}finally{
+
+setConfirmData(null);
+
+}
+
       },
     });
   };
