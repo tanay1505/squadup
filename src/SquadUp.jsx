@@ -28,6 +28,18 @@ const SPORT_COLORS = {
   "Table Tennis":"#db2777", Hockey:"#0d9488", Pickleball:"#9333ea",
 };
 
+
+// notifications
+function requestNotifPermission() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "default") Notification.requestPermission();
+}
+function sendNotif(title, body) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    try { new Notification(title, { body, icon: "/icon-192.png" }); } catch(e) {}
+  }
+}
 function getSportColor(sportStr) {
   const name = sportStr?.replace(/[^a-zA-Z\s]/g,"").trim();
   return SPORT_COLORS[name] || "#e11d48";
@@ -145,14 +157,7 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
 
   const getBtn = () => {
     if (isHost) return null;
-   if(myReq?.status==="pending")
-return{
-label:"Cancel Request",
-bg:"#fee2e2",
-tc:"#dc2626",
-disabled:false,
-action:"leave"
-};
+    if (myReq?.status==="pending")  return { label:"⏳ Pending",  bg:"#fef9c3", tc:"#92400e", disabled:true };
     if (myReq?.status==="approved") return { label:"Leave Game", bg:"#fee2e2", tc:"#dc2626", disabled:false, action:"leave" };
     if (myReq?.status==="rejected") return { label:"Declined",   bg:"#f3f4f6", tc:"#9ca3af", disabled:true };
     if (isFull) return { label:"Full", bg:"#f3f4f6", tc:"#9ca3af", disabled:true };
@@ -168,8 +173,8 @@ action:"leave"
     <div className="card" style={{
       background:"#fff", borderRadius:20, overflow:"hidden",
       boxShadow:"0 2px 12px rgba(0,0,0,0.06)",
-      border:`1px solid ${game.is_urgent?"#fde68a":"#f0f0f0"}`,
-      background: game.is_urgent ? "linear-gradient(to bottom right,#fffbeb,#fff)" : "#fff",
+      border:`1px solid ${isUrgent?"#fde68a":"#f0f0f0"}`,
+      background: isUrgent ? "linear-gradient(to bottom right,#fffbeb,#fff)" : "#fff",
     }}>
       {/* Color stripe */}
       <div style={{ height:4, background:`linear-gradient(90deg,${color},${color}66)` }}/>
@@ -186,7 +191,7 @@ action:"leave"
                 <span style={{ fontSize:11, fontWeight:800, color, fontFamily:"'DM Sans',sans-serif", letterSpacing:0.8, textTransform:"uppercase" }}>
                   {game.sport?.replace(/[^a-zA-Z\s]/g,"").trim()}
                 </span>
-                {game.is_urgent && (
+                {isUrgent && (
                   <span style={{ background:"#f59e0b", color:"#fff", fontSize:9, fontWeight:800, padding:"2px 7px", borderRadius:99, letterSpacing:0.5, fontFamily:"'DM Sans',sans-serif" }}>⚡ URGENT</span>
                 )}
               </div>
@@ -639,64 +644,10 @@ function RequestsPanel({ onClose, onApprove, onReject, requests, games }) {
               )}
             </div>
             {r.note && <div style={{ background:"#fff", borderRadius:10, padding:"10px 12px", marginBottom:10, fontSize:13, color:"#374151", fontFamily:"'DM Sans',sans-serif", fontStyle:"italic", border:"1px solid #f0f0f0" }}>"{r.note}"</div>}
-            {(tab==="pending" || r.status==="rejected") && (
+            {tab==="pending" && (
               <div style={{ display:"flex", gap:8 }}>
-                {r.status==="rejected" ? (
-                  <button
-                    onClick={()=>onApprove(r)}
-                    style={{
-                      flex:2,
-                      background:"linear-gradient(135deg,#16a34a,#15803d)",
-                      color:"#fff",
-                      border:"none",
-                      borderRadius:10,
-                      padding:"9px 0",
-                      fontSize:13,
-                      fontWeight:700,
-                      cursor:"pointer",
-                      fontFamily:"'DM Sans',sans-serif"
-                    }}
-                  >
-                    ↺ Re-Approve
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={()=>onReject(r)}
-                      style={{
-                        flex:1,
-                        background:"#fff1f2",
-                        color:"#dc2626",
-                        border:"1px solid #fecdd3",
-                        borderRadius:10,
-                        padding:"9px 0",
-                        fontSize:13,
-                        fontWeight:700,
-                        cursor:"pointer",
-                        fontFamily:"'DM Sans',sans-serif"
-                      }}
-                    >
-                      Decline
-                    </button>
-                    <button
-                      onClick={()=>onApprove(r)}
-                      style={{
-                        flex:2,
-                        background:"linear-gradient(135deg,#16a34a,#15803d)",
-                        color:"#fff",
-                        border:"none",
-                        borderRadius:10,
-                        padding:"9px 0",
-                        fontSize:13,
-                        fontWeight:700,
-                        cursor:"pointer",
-                        fontFamily:"'DM Sans',sans-serif"
-                      }}
-                    >
-                      ✓ Approve
-                    </button>
-                  </>
-                )}
+                <button onClick={()=>onReject(r)} style={{ flex:1, background:"#fff", color:"#dc2626", border:"1.5px solid #fecaca", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Decline</button>
+                <button onClick={()=>onApprove(r)} style={{ flex:2, background:"linear-gradient(135deg,#16a34a,#15803d)", color:"#fff", border:"none", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>✓ Approve</button>
               </div>
             )}
           </div>
@@ -748,7 +699,7 @@ function ContactModal({ data, onClose }) {
 
 function ProfileScreen({ user, profile, myGames, onLogout }) {
   return (
-    <div style={{ padding:"0 16px 100px", maxWidth:680, margin:"0 auto" }}>
+    <div style={{ padding:"0 16px 120px", maxWidth:680, margin:"0 auto" }}>
       <div style={{ padding:"20px 0 16px" }}>
         <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:28, color:"#111", letterSpacing:0.5 }}>My Profile</div>
       </div>
@@ -813,7 +764,7 @@ function ProfileScreen({ user, profile, myGames, onLogout }) {
 function ExploreScreen({ games, onJoin, currentUserId, myRequests, onViewContact, onCancel, onLeave }) {
   const [selected, setSelected] = useState(null);
   return (
-    <div style={{ padding:"0 16px 100px", maxWidth:680, margin:"0 auto" }}>
+    <div style={{ padding:"0 16px 120px", maxWidth:680, margin:"0 auto" }}>
       <div style={{ padding:"20px 0 16px" }}>
         <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:28, color:"#111", letterSpacing:0.5 }}>Explore Sports</div>
         <div style={{ fontSize:13, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif" }}>Browse by sport in Udaipur</div>
@@ -859,7 +810,7 @@ function ExploreScreen({ games, onJoin, currentUserId, myRequests, onViewContact
 function ActivityScreen({ myRequests, hostRequests, games, onApprove, onReject }) {
   const getGame = id => games.find(g=>g.id===id);
   return (
-    <div style={{ padding:"0 16px 100px", maxWidth:680, margin:"0 auto" }}>
+    <div style={{ padding:"0 16px 120px", maxWidth:680, margin:"0 auto" }}>
       <div style={{ padding:"20px 0 16px" }}>
         <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:28, color:"#111", letterSpacing:0.5 }}>Activity</div>
         <div style={{ fontSize:13, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif" }}>Your requests and notifications</div>
@@ -953,13 +904,8 @@ export default function SquadUp() {
 
   const showToast = (msg, type="success") => { setToast({ msg, type }); setTimeout(()=>setToast({ msg:"", type:"" }), 3500); };
 
-  useEffect(()=>{
+  useEffect(()=>{ requestNotifPermission(); }, []);
 
-if(Notification.permission!=="granted"){
-Notification.requestPermission();
-}
-
-},[]);
   useEffect(()=>{
     supabase.auth.getSession().then(({ data:{ session } })=>{
       if (session?.user) { setUser(session.user); loadProfile(session.user.id); }
@@ -981,11 +927,12 @@ Notification.requestPermission();
     if(!user)return;
     const ch = supabase.channel("games-rt")
       .on("postgres_changes",{event:"INSERT",schema:"public",table:"games"},p=>{
-        if(p.new.host_id!==user.id){ setGames(prev=>[p.new,...prev]); showToast(`New game: ${p.new.title}!`); }
+        if(p.new.host_id!==user.id){ setGames(prev=>[p.new,...prev]); showToast(`New game: ${p.new.title}!`); sendNotif('New Game Posted! 🏟️', p.new.title + ' — ' + (p.new.area||'')); }
       })
       .on("postgres_changes",{event:"DELETE",schema:"public",table:"games"},p=>{
         setGames(prev=>prev.filter(g=>g.id!==p.old.id));
         showToast("A game was cancelled.", "error");
+        sendNotif("Game Cancelled", "A game you were part of has been cancelled.");
       })
       .subscribe();
     return ()=>supabase.removeChannel(ch);
@@ -997,8 +944,7 @@ Notification.requestPermission();
       .on("postgres_changes",{event:"UPDATE",schema:"public",table:"requests"},p=>{
         if(p.new.user_id===user.id){
           loadRequests();
-          if(p.new.status==="approved") showToast("Your request was approved! ✅");
-          else if(p.new.status==="rejected") showToast("Your request was declined.", "error");
+          if(p.new.status==="approved"){ showToast("Your request was approved! ✅"); sendNotif("Approved! ✅", "You got a spot. Check contact info on the game card."); } else if(p.new.status==="rejected"){ showToast("Your request was declined.", "error"); sendNotif("Request Declined", "The host could not take you this time."); }
         }
       }).subscribe();
     return ()=>supabase.removeChannel(ch);
@@ -1018,76 +964,22 @@ Notification.requestPermission();
       host_name:profile?.name||user.email, host_id:user.id,
       host_avatar:profile?.avatar||user.email[0].toUpperCase(),
       color, tags:form.tags?form.tags.split(",").map(t=>t.trim()).filter(Boolean):[],
-      join_type:form.joinType, cost_per_player:+form.costPerPlayer, is_urgent:form.isUrgent,
+      join_type:form.joinType, cost_per_player:+form.costPerPlayer,
     }]);
     if(error){ showToast("Failed to post.", "error"); return; }
-    showToast("Game posted! 🎉"); sendPushNotification(
-"New Game Posted 🚀",
-form.title
-);setShowPost(false); loadGames();
+    showToast("Game posted! 🎉"); setShowPost(false); loadGames();
   };
 
- const handleJoinConfirm = async(game, note)=>{
-
-    const existing = requests.find(
-      r=>r.game_id===game.id &&
-      r.user_id===user.id &&
-      r.status!=="left"
-    );
-
-    if(existing){
-      showToast("You already requested this game.","error");
-      return;
-    }
-
+  const handleJoinConfirm = async(game, note)=>{
     if(game.join_type==="direct"){
-
-      const {error}=await supabase
-      .from("games")
-      .update({
-        filled_slots:game.filled_slots+1
-      })
-      .eq("id",game.id);
-
-      if(error){
-        showToast("Failed to join.","error");
-        return;
-      }
-
-      await supabase.from("requests").insert([{
-        game_id:game.id,
-        user_id:user.id,
-        user_name:profile?.name||user.email,
-        status:"approved"
-      }]);
-
+      await supabase.from("games").update({filled_slots:game.filled_slots+1}).eq("id",game.id);
       showToast(`Joined ${game.title}! 🏟️`);
-
-    }else{
-
-      const {error}=await supabase
-      .from("requests")
-      .insert([{
-        game_id:game.id,
-        user_id:user.id,
-        user_name:profile?.name||user.email,
-        note:note||null,
-        status:"pending"
-      }]);
-
-      if(error){
-        showToast(error.message,"error");
-        return;
-      }
-
+    } else {
+      await supabase.from("requests").insert([{ game_id:game.id, user_id:user.id, user_name:profile?.name||user.email, note:note||null, status:"pending" }]);
       showToast("Request sent! 📩");
     }
-
-    setJoining(null);
-
-    await loadGames();
-    await loadRequests();
-};
+    setJoining(null); loadGames(); loadRequests();
+  };
 
   // Host cancels game
   const handleCancelGame = game => {
@@ -1097,39 +989,11 @@ form.title
       confirmLabel:"Yes, Cancel Game",
       confirmColor:"#e11d48",
       onConfirm: async()=>{
-
-const { error:reqErr } = await supabase
-.from("requests")
-.delete()
-.eq("game_id",game.id);
-
-if(reqErr){
-showToast(reqErr.message,"error");
-return;
-}
-
-const { error:gameErr } = await supabase
-.from("games")
-.delete()
-.eq("id",game.id);
-
-if(gameErr){
-showToast(gameErr.message,"error");
-return;
-}
-
-showToast("Game cancelled successfully.");
-sendPushNotification(
-"Game Cancelled ❌",
-game.title
-);
-
-setConfirmData(null);
-
-await loadGames();
-await loadRequests();
-
-},
+        await supabase.from("requests").delete().eq("game_id",game.id);
+        await supabase.from("games").delete().eq("id",game.id);
+        showToast("Game cancelled. Players notified.");
+        setConfirmData(null); loadGames(); loadRequests();
+      },
     });
   };
 
@@ -1140,50 +1004,14 @@ await loadRequests();
       message:`You'll lose your spot in "${game.title}" and the host will be notified.`,
       confirmLabel:"Yes, Leave Game",
       confirmColor:"#e11d48",
-     onConfirm: async()=>{
-
-if(req){
-
-const { error } = await supabase
-.from("requests")
-.delete()
-.eq("id",req.id);
-
-if(error){
-showToast(error.message,"error");
-return;
-}
-
-}
-
-if(game.join_type==="direct" && game.filled_slots>0){
-
-const { error } = await supabase
-.from("games")
-.update({
-filled_slots:game.filled_slots-1
-})
-.eq("id",game.id);
-
-if(error){
-showToast(error.message,"error");
-return;
-}
-
-}
-
-showToast("You left the game.");
-sendPushNotification(
-"Player Left",
-game.title
-);
-
-setConfirmData(null);
-
-await loadGames();
-await loadRequests();
-
-},
+      onConfirm: async()=>{
+        if(req){ await supabase.from("requests").update({status:"left"}).eq("id",req.id); }
+        if(game.join_type==="direct" && game.filled_slots>0){
+          await supabase.from("games").update({filled_slots:game.filled_slots-1}).eq("id",game.id);
+        }
+        showToast("You've left the game.");
+        setConfirmData(null); loadGames(); loadRequests();
+      },
     });
   };
 
@@ -1191,18 +1019,12 @@ await loadRequests();
     await supabase.from("requests").update({status:"approved"}).eq("id",req.id);
     const game=games.find(g=>g.id===req.game_id);
     if(game) await supabase.from("games").update({filled_slots:game.filled_slots+1}).eq("id",game.id);
-    showToast(`${req.user_name} approved! ✅`); sendPushNotification(
-"Player Approved ✅",
-`${req.user_name} joined the game`
-); loadGames(); loadRequests();
+    showToast(`${req.user_name} approved! ✅`); loadGames(); loadRequests();
   };
 
   const handleReject = async req=>{
     await supabase.from("requests").update({status:"rejected"}).eq("id",req.id);
-    showToast("Request declined."); sendPushNotification(
-"Request Declined",
-`${req.user_name} was declined`
-); loadRequests();
+    showToast("Request declined."); loadRequests();
   };
 
   const handleViewContact = async(game,isHost)=>{
@@ -1261,11 +1083,11 @@ await loadRequests();
       <link href={FONTS} rel="stylesheet"/>
       <style>{CSS}</style>
 
-      <div style={{ minHeight:"100vh", background:"#f8f8f8", fontFamily:"'DM Sans',sans-serif" }}>
+      <div style={{ minHeight:"100vh", background:"#f8f8f8", fontFamily:"'DM Sans',sans-serif", overflowX:"hidden" }}>
 
         {/* ── HOME ── */}
         {tab==="home" && (
-          <div style={{ maxWidth:680, margin:"0 auto", padding:"0 16px" }}>
+          <div style={{ maxWidth:680, margin:"0 auto", padding:"0 16px 120px", boxSizing:"border-box" }}>
 
             {/* Header */}
             <div style={{ padding:"20px 0 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
@@ -1353,13 +1175,13 @@ await loadRequests();
             </div>
 
             {/* Urgent section */}
-            {filtered.filter(g=>g.is_urgent).length>0 && (
+            {filtered.filter(g=>g.is_urgent||g.title?.startsWith("⚡")).length>0 && (
               <div style={{ marginBottom:16 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
                   <span style={{ background:"#f59e0b", color:"#fff", fontSize:10, fontWeight:800, padding:"3px 8px", borderRadius:99, fontFamily:"'DM Sans',sans-serif", letterSpacing:0.5 }}>⚡ URGENT</span>
                   <span style={{ fontSize:12, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif" }}>Last-minute games</span>
                 </div>
-                {filtered.filter(g=>g.is_urgent).map(g=>(
+                {filtered.filter(g=>g.is_urgent||g.title?.startsWith("⚡")).map(g=>(
                   <div key={g.id} style={{ marginBottom:12 }}>
                     <GameCard game={g} onJoin={setJoining} currentUserId={user.id} myRequests={myRequests} onViewContact={handleViewContact} onCancel={handleCancelGame} onLeave={handleLeaveGame}/>
                   </div>
@@ -1369,14 +1191,14 @@ await loadRequests();
 
             {/* Regular games */}
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-              {filtered.filter(g=>!g.is_urgent).length===0&&filtered.filter(g=>g.is_urgent).length===0 ? (
+              {filtered.filter(g=>!(g.is_urgent||g.title?.startsWith("⚡"))).length===0&&filtered.filter(g=>g.is_urgent||g.title?.startsWith("⚡")).length===0 ? (
                 <div style={{ textAlign:"center", padding:"60px 20px", color:"#9ca3af" }}>
                   <div style={{ fontSize:52, marginBottom:12 }}>🏟️</div>
                   <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:22, color:"#374151", letterSpacing:0.5, marginBottom:6 }}>No games yet</div>
                   <div style={{ fontSize:14, marginBottom:20 }}>Be the first to post one!</div>
                   <button className="btn-red" style={{ width:"auto", padding:"12px 28px" }} onClick={()=>setShowPost(true)}>+ Post a Game</button>
                 </div>
-              ) : filtered.filter(g=>!g.is_urgent).map(g=>(
+              ) : filtered.filter(g=>!(g.is_urgent||g.title?.startsWith("⚡"))).map(g=>(
                 <GameCard key={g.id} game={g} onJoin={setJoining} currentUserId={user.id} myRequests={myRequests} onViewContact={handleViewContact} onCancel={handleCancelGame} onLeave={handleLeaveGame}/>
               ))}
             </div>
@@ -1399,7 +1221,7 @@ await loadRequests();
           background:"rgba(255,255,255,0.95)", backdropFilter:"blur(20px)",
           borderTop:"1px solid #f0f0f0", zIndex:100,
           display:"flex", alignItems:"center", justifyContent:"space-around",
-          padding:"6px 8px 20px",
+          padding:"6px 8px 24px",
         }}>
           {[
             { id:"home",     icon:"🏠", label:"Home" },
