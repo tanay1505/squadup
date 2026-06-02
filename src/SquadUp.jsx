@@ -153,6 +153,7 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
   const myReq   = myRequests?.find(r=>r.game_id===game.id);
   const isApproved = myReq?.status==="approved";
   const isDirect   = game.join_type==="direct";
+  const isUrgent   = game.is_urgent || game.title?.startsWith("⚡");
   const pct = Math.min((game.filled_slots/game.total_slots)*100,100);
 
   const getBtn = () => {
@@ -171,7 +172,7 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
 
   return (
     <div className="card" style={{
-      background:"#fff", borderRadius:20, overflow:"hidden",
+      borderRadius:20, overflow:"hidden",
       boxShadow:"0 2px 12px rgba(0,0,0,0.06)",
       border:`1px solid ${isUrgent?"#fde68a":"#f0f0f0"}`,
       background: isUrgent ? "linear-gradient(to bottom right,#fffbeb,#fff)" : "#fff",
