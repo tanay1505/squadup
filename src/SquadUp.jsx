@@ -801,7 +801,7 @@ function ExploreScreen({ games, onJoin, currentUserId, myRequests, onViewContact
           <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:18, color:"#111", letterSpacing:0.5 }}>{selected} Games</div>
           {games.filter(g=>g.sport?.includes(selected)).length===0 ? (
             <div style={{ textAlign:"center", padding:"40px 0", color:"#9ca3af" }}>
-              <div style={{ fontSize:36, marginBottom:8 }}>🏟️</div>
+              <img src="/icon-192.png" style={{ width:36, height:36, borderRadius:10, marginBottom:8, opacity:0.4, objectFit:"cover" }} alt=""/>
               <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:14 }}>No {selected} games yet</div>
             </div>
           ) : games.filter(g=>g.sport?.includes(selected)).map(g=>(
@@ -1100,7 +1100,7 @@ export default function SquadUp() {
       <link rel="preconnect" href="https://fonts.googleapis.com"/>
       <link href={FONTS} rel="stylesheet"/>
       <style>{CSS}</style>
-      <div style={{ width:56, height:56, borderRadius:18, background:"linear-gradient(135deg,#0ea5e9,#38bdf8)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, boxShadow:"0 8px 24px rgba(14,165,233,0.3)" }}>🏟️</div>
+      <img src="/icon-192.png" style={{ width:56, height:56, borderRadius:18, boxShadow:"0 8px 24px rgba(14,165,233,0.3)", objectFit:"cover" }} alt="SquadUp"/>
       <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:30, color:"#111", letterSpacing:2 }}>SQUAD UP</div>
       <Spinner size={24}/>
     </div>
@@ -1129,7 +1129,7 @@ export default function SquadUp() {
             {/* Header */}
             <div style={{ padding:"20px 0 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:38, height:38, borderRadius:12, background:"linear-gradient(135deg,#0ea5e9,#38bdf8)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, boxShadow:"0 4px 12px rgba(14,165,233,0.3)", flexShrink:0 }}>🏟️</div>
+                <img src="/icon-192.png" style={{ width:38, height:38, borderRadius:12, boxShadow:"0 4px 12px rgba(14,165,233,0.3)", flexShrink:0, objectFit:"cover" }} alt="SquadUp"/>
                 <div>
                   <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:22, color:"#111", letterSpacing:1, lineHeight:1 }}>SQUAD UP</div>
                   <div style={{ fontSize:11, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif", fontWeight:500 }}>Udaipur · Find your game</div>
@@ -1230,7 +1230,7 @@ export default function SquadUp() {
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               {filtered.filter(g=>!(g.is_urgent||g.title?.startsWith("⚡"))).length===0&&filtered.filter(g=>g.is_urgent||g.title?.startsWith("⚡")).length===0 ? (
                 <div style={{ textAlign:"center", padding:"60px 20px", color:"#9ca3af" }}>
-                  <div style={{ fontSize:52, marginBottom:12 }}>🏟️</div>
+                  <img src="/icon-192.png" style={{ width:52, height:52, borderRadius:16, marginBottom:12, opacity:0.5, objectFit:"cover" }} alt=""/>
                   <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:22, color:"#374151", letterSpacing:0.5, marginBottom:6 }}>No games yet</div>
                   <div style={{ fontSize:14, marginBottom:20 }}>Be the first to post one!</div>
                   <button className="btn-red" style={{ width:"auto", padding:"12px 28px" }} onClick={()=>setShowPost(true)}>+ Post a Game</button>
