@@ -23,7 +23,7 @@ const UDAIPUR_AREAS = [
 ];
 
 const SPORT_COLORS = {
-  Football:"#e11d48", Cricket:"#f97316", Basketball:"#f59e0b",
+  Football:"#0ea5e9", Cricket:"#f97316", Basketball:"#f59e0b",
   Tennis:"#16a34a", Badminton:"#0891b2", Volleyball:"#7c3aed",
   "Table Tennis":"#db2777", Hockey:"#0d9488", Pickleball:"#9333ea",
 };
@@ -42,7 +42,7 @@ function sendNotif(title, body) {
 }
 function getSportColor(sportStr) {
   const name = sportStr?.replace(/[^a-zA-Z\s]/g,"").trim();
-  return SPORT_COLORS[name] || "#e11d48";
+  return SPORT_COLORS[name] || "#0ea5e9";
 }
 
 function timeAgo(ts) {
@@ -70,14 +70,14 @@ const CSS = `
   .card:hover { transform: translateY(-2px); }
   .nav-item { transition: all 0.2s; display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none; cursor:pointer; padding:8px 20px; }
   .btn-red {
-    background: linear-gradient(135deg,#e11d48,#f43f5e);
+    background: linear-gradient(135deg,#0ea5e9,#38bdf8);
     color:#fff; border:none; border-radius:14px;
     padding:14px 24px; font-size:14px; font-weight:700;
     cursor:pointer; font-family:'DM Sans',sans-serif; width:100%;
     transition:all 0.2s; letter-spacing:0.3px;
-    box-shadow: 0 4px 16px rgba(225,29,72,0.25);
+    box-shadow: 0 4px 16px rgba(14,165,233,0.25);
   }
-  .btn-red:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(225,29,72,0.4); }
+  .btn-red:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(14,165,233,0.4); }
   .btn-red:disabled { background:#e5e7eb; color:#aaa; cursor:not-allowed; transform:none; box-shadow:none; }
   .input-field {
     background:#f8f8f8; border:2px solid #f0f0f0;
@@ -85,7 +85,7 @@ const CSS = `
     font-size:14px; font-family:'DM Sans',sans-serif;
     width:100%; outline:none; transition:border-color 0.2s;
   }
-  .input-field:focus { border-color:#e11d48; background:#fff; }
+  .input-field:focus { border-color:#0ea5e9; background:#fff; }
   .input-field::placeholder { color:#bbb; }
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:flex-end; justify-content:center; z-index:999; backdrop-filter:blur(8px); animation:fadeIn 0.2s; }
   .modal-sheet { background:#fff; border-radius:28px 28px 0 0; width:100%; max-width:680px; max-height:92vh; overflow-y:auto; animation:slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1); padding:24px 24px 48px; }
@@ -101,7 +101,7 @@ function Toast({ msg, type }) {
   return (
     <div style={{
       position:"fixed", bottom:90, left:"50%", transform:"translateX(-50%)",
-      background: type==="error" ? "#e11d48" : "#111",
+      background: type==="error" ? "#0ea5e9" : "#111",
       color:"#fff", padding:"12px 22px", borderRadius:14, fontSize:13,
       fontWeight:700, fontFamily:"'DM Sans',sans-serif",
       boxShadow:"0 8px 32px rgba(0,0,0,0.2)", zIndex:9999,
@@ -112,11 +112,11 @@ function Toast({ msg, type }) {
   );
 }
 
-function Spinner({ size=28, color="#e11d48" }) {
+function Spinner({ size=28, color="#0ea5e9" }) {
   return <div style={{ width:size, height:size, border:`3px solid #f0f0f0`, borderTop:`3px solid ${color}`, borderRadius:"50%", animation:"spin 0.7s linear infinite" }}/>;
 }
 
-function Avatar({ letter, color="#e11d48", size=36 }) {
+function Avatar({ letter, color="#0ea5e9", size=36 }) {
   return (
     <div style={{
       width:size, height:size, borderRadius:"50%", flexShrink:0,
@@ -201,8 +201,8 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
           </div>
           <span style={{
             fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:99,
-            background: game.skill_level==="Casual"?"#f0fdf4":game.skill_level==="Competitive"?"#fff1f2":"#eff6ff",
-            color: game.skill_level==="Casual"?"#15803d":game.skill_level==="Competitive"?"#be123c":"#1d4ed8",
+            background: game.skill_level==="Casual"?"#f0fdf4":game.skill_level==="Competitive"?"#f0f9ff":"#eff6ff",
+            color: game.skill_level==="Casual"?"#15803d":game.skill_level==="Competitive"?"#0284c7":"#1d4ed8",
             fontFamily:"'DM Sans',sans-serif",
           }}>{game.skill_level}</span>
         </div>
@@ -235,7 +235,7 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
             {isDirect?"⚡ Open":"🔒 Approval"}
           </span>
           {(game.tags||[]).slice(0,2).map(t=>(
-            <span key={t} className="tag" style={{ background:"#f8f8f8", color:"#6b7280" }}>{t}</span>
+            <span key={t} className="tag" style={{ background:"#e0f2fe", color:"#0284c7" }}>{t}</span>
           ))}
         </div>
 
@@ -257,7 +257,7 @@ function GameCard({ game, onJoin, currentUserId, myRequests, onViewContact, onCa
             )}
             {/* Host cancel game */}
             {isHost && (
-              <button onClick={()=>onCancel(game)} style={{ background:"#fff1f2", color:"#be123c", border:"1px solid #fecdd3", borderRadius:10, padding:"7px 12px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+              <button onClick={()=>onCancel(game)} style={{ background:"#fff0f0", color:"#dc2626", border:"1px solid #fecaca", borderRadius:10, padding:"7px 12px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                 Cancel Game
               </button>
             )}
@@ -304,12 +304,12 @@ function PostGameModal({ onClose, onPost, user }) {
           </div>
           <div style={{ display:"flex", gap:6, marginBottom:8 }}>
             {steps.map((_,i)=>(
-              <div key={i} style={{ flex:1, height:3, borderRadius:99, background:i+1<=step?"#e11d48":"#f0f0f0", transition:"background 0.3s" }}/>
+              <div key={i} style={{ flex:1, height:3, borderRadius:99, background:i+1<=step?"#0ea5e9":"#f0f0f0", transition:"background 0.3s" }}/>
             ))}
           </div>
           <div style={{ display:"flex", justifyContent:"space-between" }}>
             {steps.map((s,i)=>(
-              <span key={i} style={{ fontSize:11, fontFamily:"'DM Sans',sans-serif", color:i+1===step?"#e11d48":"#9ca3af", fontWeight:i+1===step?700:500 }}>{s}</span>
+              <span key={i} style={{ fontSize:11, fontFamily:"'DM Sans',sans-serif", color:i+1===step?"#0ea5e9":"#9ca3af", fontWeight:i+1===step?700:500 }}>{s}</span>
             ))}
           </div>
         </div>
@@ -323,7 +323,7 @@ function PostGameModal({ onClose, onPost, user }) {
                 {SPORTS.map(s=>{
                   const full = `${s.emoji} ${s.name}`;
                   const sel = form.sport===full;
-                  const c = SPORT_COLORS[s.name]||"#e11d48";
+                  const c = SPORT_COLORS[s.name]||"#0ea5e9";
                   return (
                     <div key={s.name} onClick={()=>set("sport",full)} style={{
                       background:sel?`${c}10`:"#fafafa",
@@ -420,9 +420,9 @@ function PostGameModal({ onClose, onPost, user }) {
                   return (
                     <button key={lv} onClick={()=>set("skillLevel",lv)} style={{
                       flex:1, padding:"11px 0", borderRadius:12,
-                      border:`2px solid ${sel?"#e11d48":"#f0f0f0"}`,
-                      background:sel?"#fff1f2":"#fafafa",
-                      color:sel?"#e11d48":"#6b7280",
+                      border:`2px solid ${sel?"#0ea5e9":"#f0f0f0"}`,
+                      background:sel?"#f0f9ff":"#fafafa",
+                      color:sel?"#0ea5e9":"#6b7280",
                       fontWeight:700, fontSize:13, cursor:"pointer",
                       fontFamily:"'DM Sans',sans-serif", transition:"all 0.15s",
                     }}>{lv}</button>
@@ -462,12 +462,12 @@ function PostGameModal({ onClose, onPost, user }) {
                   const sel = form.joinType===opt.val;
                   return (
                     <div key={opt.val} onClick={()=>set("joinType",opt.val)} style={{
-                      border:`2px solid ${sel?"#e11d48":"#f0f0f0"}`,
+                      border:`2px solid ${sel?"#0ea5e9":"#f0f0f0"}`,
                       borderRadius:16, padding:"16px 14px", cursor:"pointer",
-                      background:sel?"#fff1f2":"#fafafa", transition:"all 0.15s",
+                      background:sel?"#f0f9ff":"#fafafa", transition:"all 0.15s",
                     }}>
                       <div style={{ fontSize:24, marginBottom:6 }}>{opt.icon}</div>
-                      <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:18, color:sel?"#e11d48":"#111", letterSpacing:0.5 }}>{opt.title}</div>
+                      <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:18, color:sel?"#0ea5e9":"#111", letterSpacing:0.5 }}>{opt.title}</div>
                       <div style={{ fontSize:12, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif", marginTop:2 }}>{opt.desc}</div>
                     </div>
                   );
@@ -568,7 +568,7 @@ function JoinModal({ game, onClose, onConfirm, user }) {
 
 // ─── CONFIRM CANCEL MODAL (host cancel game / player leave) ──────────────────
 
-function ConfirmModal({ title, message, confirmLabel, confirmColor="#e11d48", onConfirm, onClose }) {
+function ConfirmModal({ title, message, confirmLabel, confirmColor="#0ea5e9", onConfirm, onClose }) {
   const [loading, setLoading] = useState(false);
   return (
     <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
@@ -613,12 +613,12 @@ function RequestsPanel({ onClose, onApprove, onReject, requests, games }) {
           {[["pending",pending.length],["approved",approved.length],["declined",rejected.length]].map(([t,c])=>(
             <button key={t} onClick={()=>setTab(t)} style={{
               flex:1, padding:"10px 0", background:"none", border:"none",
-              color:tab===t?"#e11d48":"#9ca3af", fontWeight:700, fontSize:13,
+              color:tab===t?"#0ea5e9":"#9ca3af", fontWeight:700, fontSize:13,
               cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
-              borderBottom:`2px solid ${tab===t?"#e11d48":"transparent"}`,
+              borderBottom:`2px solid ${tab===t?"#0ea5e9":"transparent"}`,
               textTransform:"capitalize", marginBottom:-2,
             }}>
-              {t} {c>0&&<span style={{ background:tab===t?"#fff1f2":"#f3f4f6", color:tab===t?"#e11d48":"#9ca3af", borderRadius:99, padding:"1px 7px", fontSize:11, marginLeft:4 }}>{c}</span>}
+              {t} {c>0&&<span style={{ background:tab===t?"#f0f9ff":"#f3f4f6", color:tab===t?"#0ea5e9":"#9ca3af", borderRadius:99, padding:"1px 7px", fontSize:11, marginLeft:4 }}>{c}</span>}
             </button>
           ))}
         </div>
@@ -631,7 +631,7 @@ function RequestsPanel({ onClose, onApprove, onReject, requests, games }) {
         ) : shown.map(r=>(
           <div key={r.id} style={{ background:"#fafafa", borderRadius:16, padding:"14px 16px", marginBottom:12, border:"1px solid #f0f0f0" }}>
             <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:r.note?10:tab==="pending"?10:0 }}>
-              <Avatar letter={r.user_name[0]} color="#e11d48" size={40}/>
+              <Avatar letter={r.user_name[0]} color="#0ea5e9" size={40}/>
               <div style={{ flex:1 }}>
                 <div style={{ fontWeight:700, fontSize:15, color:"#111", fontFamily:"'DM Sans',sans-serif" }}>{r.user_name}</div>
                 <div style={{ fontSize:12, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif" }}>
@@ -647,7 +647,7 @@ function RequestsPanel({ onClose, onApprove, onReject, requests, games }) {
             {r.note && <div style={{ background:"#fff", borderRadius:10, padding:"10px 12px", marginBottom:10, fontSize:13, color:"#374151", fontFamily:"'DM Sans',sans-serif", fontStyle:"italic", border:"1px solid #f0f0f0" }}>"{r.note}"</div>}
             {tab==="pending" && (
               <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>onReject(r)} style={{ flex:1, background:"#fff", color:"#dc2626", border:"1.5px solid #fecaca", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Decline</button>
+                <button onClick={()=>onReject(r)} style={{ flex:1, background:"#fff0f0", color:"#dc2626", border:"1.5px solid #fecaca", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Decline</button>
                 <button onClick={()=>onApprove(r)} style={{ flex:2, background:"linear-gradient(135deg,#16a34a,#15803d)", color:"#fff", border:"none", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>✓ Approve</button>
               </div>
             )}
@@ -681,7 +681,7 @@ function ContactModal({ data, onClose }) {
           </div>
         ) : contacts.map((c,i)=>(
           <div key={i} style={{ display:"flex", alignItems:"center", gap:14, background:"#fafafa", borderRadius:16, padding:"14px 16px", marginBottom:10, border:"1px solid #f0f0f0" }}>
-            <Avatar letter={c.avatar||c.name?.[0]||"?"} color="#e11d48" size={44}/>
+            <Avatar letter={c.avatar||c.name?.[0]||"?"} color="#0ea5e9" size={44}/>
             <div style={{ flex:1 }}>
               <div style={{ fontWeight:700, fontSize:15, color:"#111", fontFamily:"'DM Sans',sans-serif" }}>{c.name}</div>
               <div style={{ fontSize:13, color:"#6b7280", fontFamily:"'DM Sans',sans-serif" }}>{c.phone?`📱 +91 ${c.phone}`:"No phone on file"}</div>
@@ -705,9 +705,9 @@ function ProfileScreen({ user, profile, myGames, onLogout }) {
         <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:28, color:"#111", letterSpacing:0.5 }}>My Profile</div>
       </div>
 
-      <div style={{ background:"linear-gradient(135deg,#fff1f2,#fff)", border:"1px solid #fecdd3", borderRadius:24, padding:"24px", marginBottom:20 }}>
+      <div style={{ background:"linear-gradient(135deg,#f0f9ff,#fff)", border:"1px solid #bae6fd", borderRadius:24, padding:"24px", marginBottom:20 }}>
         <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:20 }}>
-          <div style={{ width:60, height:60, borderRadius:18, background:"linear-gradient(135deg,#e11d48,#f43f5e)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, fontWeight:800, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:1 }}>
+          <div style={{ width:60, height:60, borderRadius:18, background:"linear-gradient(135deg,#0ea5e9,#38bdf8)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, fontWeight:800, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:1 }}>
             {(profile?.avatar||user.email[0]).toUpperCase()}
           </div>
           <div>
@@ -760,7 +760,7 @@ function ProfileScreen({ user, profile, myGames, onLogout }) {
       }} style={{ width:"100%", background:"#f0fdf4", color:"#15803d", border:"1.5px solid #bbf7d0", borderRadius:14, padding:"13px 0", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }}>
         🔄 Refresh Session
       </button>
-      <button onClick={onLogout} style={{ width:"100%", background:"#fff1f2", color:"#e11d48", border:"1.5px solid #fecdd3", borderRadius:14, padding:"14px 0", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+      <button onClick={onLogout} style={{ width:"100%", background:"#f0f9ff", color:"#0ea5e9", border:"1.5px solid #bae6fd", borderRadius:14, padding:"14px 0", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
         Sign Out
       </button>
     </div>
@@ -779,7 +779,7 @@ function ExploreScreen({ games, onJoin, currentUserId, myRequests, onViewContact
       </div>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:24 }}>
         {SPORTS.map(s=>{
-          const c = SPORT_COLORS[s.name]||"#e11d48";
+          const c = SPORT_COLORS[s.name]||"#0ea5e9";
           const count = games.filter(g=>g.sport?.includes(s.name)).length;
           const sel = selected===s.name;
           return (
@@ -844,7 +844,7 @@ function ActivityScreen({ myRequests, hostRequests, games, onApprove, onReject }
                 </div>
                 <span style={{
                   fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:99, fontFamily:"'DM Sans',sans-serif",
-                  background:r.status==="approved"?"#f0fdf4":r.status==="rejected"?"#fff1f2":"#fffbeb",
+                  background:r.status==="approved"?"#f0fdf4":r.status==="rejected"?"#f0f9ff":"#fffbeb",
                   color:r.status==="approved"?"#15803d":r.status==="rejected"?"#dc2626":"#92400e",
                 }}>
                   {r.status==="approved"?"✅ Approved":r.status==="rejected"?"❌ Declined":"⏳ Pending"}
@@ -862,9 +862,9 @@ function ActivityScreen({ myRequests, hostRequests, games, onApprove, onReject }
           {hostRequests.map(r=>{
             const g = getGame(r.game_id);
             return (
-              <div key={r.id} style={{ background:"#fff", borderRadius:16, padding:"14px 16px", marginBottom:10, border:`1px solid ${r.status==="pending"?"#fecdd3":"#f0f0f0"}`, boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
+              <div key={r.id} style={{ background:"#fff", borderRadius:16, padding:"14px 16px", marginBottom:10, border:`1px solid ${r.status==="pending"?"#bae6fd":"#f0f0f0"}`, boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:r.status==="pending"?10:0 }}>
-                  <Avatar letter={r.user_name[0]} color="#e11d48" size={38}/>
+                  <Avatar letter={r.user_name[0]} color="#0ea5e9" size={38}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:14, fontWeight:700, color:"#111", fontFamily:"'DM Sans',sans-serif" }}>{r.user_name}</div>
                     <div style={{ fontSize:12, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif" }}>{g?.title} · {timeAgo(r.created_at)}</div>
@@ -878,7 +878,7 @@ function ActivityScreen({ myRequests, hostRequests, games, onApprove, onReject }
                 {r.note && <div style={{ background:"#fafafa", borderRadius:10, padding:"8px 12px", marginBottom:10, fontSize:13, color:"#374151", fontFamily:"'DM Sans',sans-serif", fontStyle:"italic", border:"1px solid #f0f0f0" }}>"{r.note}"</div>}
                 {r.status==="pending" && (
                   <div style={{ display:"flex", gap:8 }}>
-                    <button onClick={()=>onReject(r)} style={{ flex:1, background:"#fff1f2", color:"#dc2626", border:"1px solid #fecdd3", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Decline</button>
+                    <button onClick={()=>onReject(r)} style={{ flex:1, background:"#fff0f0", color:"#dc2626", border:"1px solid #fecaca", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Decline</button>
                     <button onClick={()=>onApprove(r)} style={{ flex:2, background:"linear-gradient(135deg,#16a34a,#15803d)", color:"#fff", border:"none", borderRadius:10, padding:"9px 0", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>✓ Approve</button>
                   </div>
                 )}
@@ -1006,7 +1006,7 @@ export default function SquadUp() {
       title:"Cancel This Game?",
       message:`This will remove "${game.title}" and notify all players that it's been cancelled.`,
       confirmLabel:"Yes, Cancel Game",
-      confirmColor:"#e11d48",
+      confirmColor:"#0ea5e9",
       onConfirm: async()=>{
         await supabase.from("requests").delete().eq("game_id",game.id);
         await supabase.from("games").delete().eq("id",game.id);
@@ -1022,7 +1022,7 @@ export default function SquadUp() {
       title:"Leave This Game?",
       message:`You'll lose your spot in "${game.title}" and the host will be notified.`,
       confirmLabel:"Yes, Leave Game",
-      confirmColor:"#e11d48",
+      confirmColor:"#0ea5e9",
       onConfirm: async()=>{
         if(req){ await supabase.from("requests").update({status:"left"}).eq("id",req.id); }
         if(game.join_type==="direct" && game.filled_slots>0){
@@ -1100,7 +1100,7 @@ export default function SquadUp() {
       <link rel="preconnect" href="https://fonts.googleapis.com"/>
       <link href={FONTS} rel="stylesheet"/>
       <style>{CSS}</style>
-      <div style={{ width:56, height:56, borderRadius:18, background:"linear-gradient(135deg,#e11d48,#f43f5e)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, boxShadow:"0 8px 24px rgba(225,29,72,0.3)" }}>🏟️</div>
+      <div style={{ width:56, height:56, borderRadius:18, background:"linear-gradient(135deg,#0ea5e9,#38bdf8)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, boxShadow:"0 8px 24px rgba(14,165,233,0.3)" }}>🏟️</div>
       <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:30, color:"#111", letterSpacing:2 }}>SQUAD UP</div>
       <Spinner size={24}/>
     </div>
@@ -1120,7 +1120,7 @@ export default function SquadUp() {
       <link href={FONTS} rel="stylesheet"/>
       <style>{CSS}</style>
 
-      <div style={{ minHeight:"100vh", background:"#f8f8f8", fontFamily:"'DM Sans',sans-serif", overflowX:"hidden" }}>
+      <div style={{ minHeight:"100vh", background:"#f0f9ff", fontFamily:"'DM Sans',sans-serif", overflowX:"hidden" }}>
 
         {/* ── HOME ── */}
         {tab==="home" && (
@@ -1129,7 +1129,7 @@ export default function SquadUp() {
             {/* Header */}
             <div style={{ padding:"20px 0 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:38, height:38, borderRadius:12, background:"linear-gradient(135deg,#e11d48,#f43f5e)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, boxShadow:"0 4px 12px rgba(225,29,72,0.3)", flexShrink:0 }}>🏟️</div>
+                <div style={{ width:38, height:38, borderRadius:12, background:"linear-gradient(135deg,#0ea5e9,#38bdf8)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, boxShadow:"0 4px 12px rgba(14,165,233,0.3)", flexShrink:0 }}>🏟️</div>
                 <div>
                   <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:22, color:"#111", letterSpacing:1, lineHeight:1 }}>SQUAD UP</div>
                   <div style={{ fontSize:11, color:"#9ca3af", fontFamily:"'DM Sans',sans-serif", fontWeight:500 }}>Udaipur · Find your game</div>
@@ -1137,22 +1137,22 @@ export default function SquadUp() {
               </div>
               <div onClick={()=>setShowRequests(true)} style={{ position:"relative", cursor:"pointer", background:"#fff", borderRadius:14, width:40, height:40, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, border:"1px solid #f0f0f0", boxShadow:"0 1px 4px rgba(0,0,0,0.06)" }}>
                 🔔
-                {pendingCount>0&&<div style={{ position:"absolute", top:-4, right:-4, background:"#e11d48", color:"#fff", borderRadius:"50%", width:18, height:18, fontSize:10, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans',sans-serif" }}>{pendingCount}</div>}
+                {pendingCount>0&&<div style={{ position:"absolute", top:-4, right:-4, background:"#0ea5e9", color:"#fff", borderRadius:"50%", width:18, height:18, fontSize:10, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans',sans-serif" }}>{pendingCount}</div>}
               </div>
             </div>
 
             {/* Hero */}
-            <div style={{ background:"#111", borderRadius:22, padding:"22px 24px", marginBottom:20, position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", right:-20, top:-20, fontSize:110, opacity:0.06 }}>⚽</div>
-              <div style={{ fontSize:12, color:"#e11d4888", fontWeight:700, letterSpacing:1, textTransform:"uppercase", fontFamily:"'DM Sans',sans-serif", marginBottom:6 }}>
+            <div style={{ background:"linear-gradient(135deg,#0ea5e9,#0284c7)", borderRadius:22, padding:"22px 24px", marginBottom:20, position:"relative", overflow:"hidden" }}>
+              <div style={{ position:"absolute", right:-20, top:-20, fontSize:110, opacity:0.12 }}>⚽</div>
+              <div style={{ fontSize:12, color:"rgba(255,255,255,0.8)", fontWeight:700, letterSpacing:1, textTransform:"uppercase", fontFamily:"'DM Sans',sans-serif", marginBottom:6 }}>
                 Hey {(profile?.name||user.email).split(" ")[0]} 👋
               </div>
               <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:28, color:"#fff", lineHeight:1.2, marginBottom:16, letterSpacing:0.5 }}>
                 Find players nearby.<br/>
-                <span style={{ color:"#e11d48" }}>Complete your squad</span> instantly.
+                <span style={{ color:"#e0f2fe" }}>Complete your squad</span> instantly.
               </div>
               <div style={{ display:"flex", gap:10 }}>
-                <button onClick={()=>setSport("All")} style={{ background:"linear-gradient(135deg,#e11d48,#f43f5e)", color:"#fff", border:"none", borderRadius:12, padding:"11px 20px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", boxShadow:"0 4px 14px rgba(225,29,72,0.4)" }}>
+                <button onClick={()=>setSport("All")} style={{ background:"linear-gradient(135deg,#0ea5e9,#38bdf8)", color:"#fff", border:"none", borderRadius:12, padding:"11px 20px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", boxShadow:"0 4px 14px rgba(14,165,233,0.4)" }}>
                   Join a Game
                 </button>
                 <button onClick={()=>setShowPost(true)} style={{ background:"rgba(255,255,255,0.1)", color:"#fff", border:"1px solid rgba(255,255,255,0.15)", borderRadius:12, padding:"11px 20px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
@@ -1171,7 +1171,7 @@ export default function SquadUp() {
             <div style={{ display:"flex", gap:8, overflowX:"auto", paddingBottom:4, marginBottom:10, scrollbarWidth:"none" }}>
               {sportFilters.map(f=>{
                 const sel = sportFilter===f;
-                const c = SPORT_COLORS[f]||"#e11d48";
+                const c = SPORT_COLORS[f]||"#0ea5e9";
                 return (
                   <button key={f} onClick={()=>setSport(f)} style={{
                     flexShrink:0, padding:"7px 16px", borderRadius:99,
@@ -1194,9 +1194,9 @@ export default function SquadUp() {
                 return (
                   <button key={a} onClick={()=>setArea(a)} style={{
                     flexShrink:0, padding:"6px 14px", borderRadius:99,
-                    border:`2px solid ${sel?"#e11d48":"#e5e7eb"}`,
-                    background:sel?"#fff1f2":"#fff",
-                    color:sel?"#e11d48":"#6b7280", fontSize:12,
+                    border:`2px solid ${sel?"#0ea5e9":"#e5e7eb"}`,
+                    background:sel?"#f0f9ff":"#fff",
+                    color:sel?"#0ea5e9":"#6b7280", fontSize:12,
                     fontWeight:600, cursor:"pointer",
                     fontFamily:"'DM Sans',sans-serif",
                     transition:"all 0.15s", whiteSpace:"nowrap",
@@ -1264,18 +1264,17 @@ export default function SquadUp() {
             { id:"home",     icon:"🏠", label:"Home" },
             { id:"explore",  icon:"🔭", label:"Explore" },
           ].map(n=>(
-            <button key={n.id} onClick={()=>setTab(n.id)} className="nav-item" style={{ opacity:tab===n.id?1:0.45 }}>
-              <span style={{ fontSize:22 }}>{n.icon}</span>
-              <span style={{ fontSize:10, fontWeight:700, color:tab===n.id?"#e11d48":"#6b7280", fontFamily:"'DM Sans',sans-serif" }}>{n.label}</span>
+            <button key={n.id} onClick={()=>setTab(n.id)} className="nav-item" style={{ opacity:tab===n.id?1:0.4 }}>
+              <span style={{ fontSize:26, filter:tab===n.id?"drop-shadow(0 0 6px rgba(14,165,233,0.5))":"none", transition:"all 0.2s" }}>{n.icon}</span>
             </button>
           ))}
 
           {/* Center button */}
           <button onClick={()=>setShowPost(true)} style={{
             width:54, height:54, borderRadius:"50%",
-            background:"linear-gradient(135deg,#e11d48,#f43f5e)",
+            background:"linear-gradient(135deg,#0ea5e9,#38bdf8)",
             border:"none", cursor:"pointer", fontSize:24,
-            boxShadow:"0 4px 18px rgba(225,29,72,0.45)",
+            boxShadow:"0 4px 18px rgba(14,165,233,0.45)",
             display:"flex", alignItems:"center", justifyContent:"center",
             transform:"translateY(-8px)", transition:"all 0.2s",
             color:"#fff", fontWeight:700,
@@ -1285,10 +1284,9 @@ export default function SquadUp() {
             { id:"activity", icon:"⚡", label:"Activity", badge:activityCount },
             { id:"profile",  icon:"👤", label:"Profile" },
           ].map(n=>(
-            <button key={n.id} onClick={()=>setTab(n.id)} className="nav-item" style={{ opacity:tab===n.id?1:0.45, position:"relative" }}>
-              <span style={{ fontSize:22 }}>{n.icon}</span>
-              <span style={{ fontSize:10, fontWeight:700, color:tab===n.id?"#e11d48":"#6b7280", fontFamily:"'DM Sans',sans-serif" }}>{n.label}</span>
-              {n.badge>0&&<div style={{ position:"absolute", top:2, right:12, background:"#e11d48", color:"#fff", borderRadius:"50%", width:16, height:16, fontSize:9, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center" }}>{n.badge}</div>}
+            <button key={n.id} onClick={()=>setTab(n.id)} className="nav-item" style={{ opacity:tab===n.id?1:0.4, position:"relative" }}>
+              <span style={{ fontSize:26, filter:tab===n.id?"drop-shadow(0 0 6px rgba(14,165,233,0.5))":"none", transition:"all 0.2s" }}>{n.icon}</span>
+              {n.badge>0&&<div style={{ position:"absolute", top:2, right:10, background:"#0ea5e9", color:"#fff", borderRadius:"50%", width:16, height:16, fontSize:9, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center" }}>{n.badge}</div>}
             </button>
           ))}
         </div>
